@@ -75,8 +75,8 @@ class QueryDatabaseRequest(BaseModel):
         None,
         description="When supplied, orders the results based on the provided sort criteria.",
     )
-    start_cursor: StartCursor = None
-    page_size: PageSize = None
+    start_cursor: Optional[StartCursor] = None
+    page_size: Optional[PageSize] = None
 
 
 QueryDatabaseResponse = NotionPaginatedData[Union[Database, Page]]

@@ -45,14 +45,14 @@ class NotionPaginatedData(BaseModel, Generic[TResult]):
 
 
 StartCursor = Annotated[
-    Optional[str],
+    str,
     Field(
         description="If supplied, this endpoint will return a page of results starting after the cursor provided. If not supplied, this endpoint will return the first page of results.",
     ),
 ]
 
 PageSize = Annotated[
-    Optional[int],
+    int,
     Field(
         gt=0,
         le=100,
@@ -93,6 +93,24 @@ class EntryTimestampSortObject(BaseSortObject):
 
 
 SortObject = Union[PropertyValueSortObject, EntryTimestampSortObject]
+
+
+class SortObjectFactory:
+    @classmethod
+    def new_timestamp_sort(
+        cls,
+        timestamp: SortAllowedTimestampLiteral,
+        direction: SortDirectionLiteral = "ascending",
+    ):
+        return EntryTimestampSortObject(timestamp=timestamp, direction=direction)
+
+    @classmethod
+    def new_property_sort(
+        cls,
+        property: str,
+        direction: SortDirectionLiteral = "ascending",
+    ):
+        return PropertyValueSortObject(property=property, direction=direction)
 
 
 # Filter Object
@@ -169,7 +187,7 @@ class FormulaFilterObject(BaseFilterObject):
         CheckboxFilterObject, DateFilterObject, NumberFilterObject, RichTextFilterObject
     ]
 
-    @model_validator
+    @model_validator(mode="after")
     def ensure_exact_one_operand(self):
         if not len(self.formula) == 1:
             raise ValueError(
@@ -413,6 +431,7 @@ __all__ = [
     "PageSize",
     # Sort Object
     "SortObject",
+    "SortObjectFactory",
     # Filter Object
     "CheckboxFilterObject",
     "DateFilterObject",

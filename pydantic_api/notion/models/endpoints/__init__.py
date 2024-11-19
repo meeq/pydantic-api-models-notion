@@ -20,6 +20,7 @@ from .base import (
     PageSize,
     StartCursor,
     SortObject,
+    SortObjectFactory,
     NotionPaginatedData,
     NotionPaginatedDataTypeLiteral,
     CheckboxFilterObject,
@@ -51,7 +52,7 @@ from .pages import (
 from .users import (
     ListAllUsersRequest,
     ListAllUsersResponse,
-    RetrieveBotUserRequest,
+    RetrieveUserRequest,
     RetrieveUserResponse,
     RetrieveBotUserRequest,
     RetrieveBotUserResponse,
@@ -83,6 +84,7 @@ __all__ = [
     "NotionPaginatedDataTypeLiteral",
     "NotionPaginatedData",
     "SortObject",
+    "SortObjectFactory",
     "CheckboxFilterObject",
     "DateFilterObject",
     "FilesFilterObject",
@@ -110,7 +112,7 @@ __all__ = [
     # users
     "ListAllUsersRequest",
     "ListAllUsersResponse",
-    "RetrieveBotUserRequest",
+    "RetrieveUserRequest",
     "RetrieveUserResponse",
     "RetrieveBotUserRequest",
     "RetrieveBotUserResponse",

@@ -35,31 +35,40 @@ class BaseDatabaseProperty(BaseModel):
     )
     type: DatabasePropertyTypeLiteral
 
+    def dump_exclude_type(self):
+        raw_dict = self.dump_json_dict()
+        raw_dict.pop("type")
+        return raw_dict
+
+    @classmethod
+    def define(cls):
+        return cls()
+
 
 # Specific Database Property Schemas
 class CheckboxDatabaseProperty(BaseDatabaseProperty):
     type: Literal["checkbox"] = "checkbox"
-    checkbox: EmptyConfig
+    checkbox: EmptyConfig = Field(default_factory=EmptyConfig)
 
 
 class CreatedByDatabaseProperty(BaseDatabaseProperty):
     type: Literal["created_by"] = "created_by"
-    created_by: EmptyConfig
+    created_by: EmptyConfig = Field(default_factory=EmptyConfig)
 
 
 class CreatedTimeDatabaseProperty(BaseDatabaseProperty):
     type: Literal["created_time"] = "created_time"
-    created_time: EmptyConfig
+    created_time: EmptyConfig = Field(default_factory=EmptyConfig)
 
 
 class DateDatabaseProperty(BaseDatabaseProperty):
     type: Literal["date"] = "date"
-    date: EmptyConfig
+    date: EmptyConfig = Field(default_factory=EmptyConfig)
 
 
 class EmailDatabaseProperty(BaseDatabaseProperty):
     type: Literal["email"] = "email"
-    email: EmptyConfig
+    email: EmptyConfig = Field(default_factory=EmptyConfig)
 
 
 class FilesDatabaseProperty(BaseDatabaseProperty):
@@ -70,7 +79,7 @@ class FilesDatabaseProperty(BaseDatabaseProperty):
     """
 
     type: Literal["files"] = "files"
-    files: EmptyConfig
+    files: EmptyConfig = Field(default_factory=EmptyConfig)
 
 
 # formula
@@ -85,17 +94,21 @@ class FormulaDatabaseProperty(BaseDatabaseProperty):
     type: Literal["formula"] = "formula"
     formula: FormulaPropertyConfig
 
+    @classmethod
+    def define(cls, expression: str):
+        return cls(formula=FormulaPropertyConfig(expression=expression))
+
 
 # last_edited_by
 class LastEditedByDatabaseProperty(BaseDatabaseProperty):
     type: Literal["last_edited_by"] = "last_edited_by"
-    last_edited_by: EmptyConfig
+    last_edited_by: EmptyConfig = Field(default_factory=EmptyConfig)
 
 
 # last_edited_time
 class LastEditedTimeDatabaseProperty(BaseDatabaseProperty):
     type: Literal["last_edited_time"] = "last_edited_time"
-    last_edited_time: EmptyConfig
+    last_edited_time: EmptyConfig = Field(default_factory=EmptyConfig)
 
 
 # multi_select
@@ -107,6 +120,10 @@ class MultiSelectDatabaseProperty(BaseDatabaseProperty):
     type: Literal["multi_select"] = "multi_select"
     multi_select: MultiSelectPropertyConfig
 
+    @classmethod
+    def define(cls, options: List[SelectOption]):
+        return cls(multi_select=MultiSelectPropertyConfig(options=options))
+
 
 # number
 class NumberPropertyConfig(BaseModel):
@@ -117,17 +134,21 @@ class NumberDatabaseProperty(BaseDatabaseProperty):
     type: Literal["number"] = "number"
     number: NumberPropertyConfig = Field(default_factory=NumberPropertyConfig)
 
+    @classmethod
+    def define(cls, format: Optional[NumberFormatLiteral] = None):
+        return cls(number=NumberPropertyConfig(format=format))
+
 
 # people
 class PeopleDatabaseProperty(BaseDatabaseProperty):
     type: Literal["people"] = "people"
-    people: EmptyConfig
+    people: EmptyConfig = Field(default_factory=EmptyConfig)
 
 
 # phone_number
 class PhoneNumberDatabaseProperty(BaseDatabaseProperty):
     type: Literal["phone_number"] = "phone_number"
-    phone_number: EmptyConfig
+    phone_number: EmptyConfig = Field(default_factory=EmptyConfig)
 
 
 # relation
@@ -166,7 +187,7 @@ class RelationDatabaseProperty(BaseDatabaseProperty):
 # rich_text
 class RichTextDatabaseProperty(BaseDatabaseProperty):
     type: Literal["rich_text"] = "rich_text"
-    rich_text: EmptyConfig
+    rich_text: EmptyConfig = Field(default_factory=EmptyConfig)
 
 
 # rollup
@@ -194,19 +215,27 @@ class RollupDatabaseProperty(BaseDatabaseProperty):
     type: Literal["rollup"] = "rollup"
     rollup: RollupPropertyConfig
 
+    @classmethod
+    def define(
+        cls,
+        function: RollupFunctionLiteral,
+        relation_property_name: Optional[str] = None,
+        relation_property_id: Optional[str] = None,
+        rollup_property_name: Optional[str] = None,
+        rollup_property_id: Optional[str] = None,
+    ):
+        return cls(
+            rollup=RollupPropertyConfig(
+                function=function,
+                relation_property_name=relation_property_name,
+                relation_property_id=relation_property_id,
+                rollup_property_name=rollup_property_name,
+                rollup_property_id=rollup_property_id,
+            )
+        )
+
 
 # select
-class SelectOption(BaseModel):
-    id: Optional[str] = Field(
-        None,
-        description="An identifier for the option. It doesn't change if the name is changed. These are sometimes, but not always, UUIDs.",
-    )
-    name: Optional[str] = Field(
-        None, description="The name of the option as it appears in the Notion UI."
-    )
-    color: Optional[ColorLiteral] = Field(None)
-
-
 class SelectPropertyConfig(BaseModel):
     options: List[SelectOption] = Field(default_factory=list)
 
@@ -214,6 +243,10 @@ class SelectPropertyConfig(BaseModel):
 class SelectDatabaseProperty(BaseDatabaseProperty):
     type: Literal["select"] = "select"
     select: SelectPropertyConfig = Field(default_factory=SelectPropertyConfig)
+
+    @classmethod
+    def define(cls, options: List[SelectOption]):
+        return cls(select=SelectPropertyConfig(options=options))
 
 
 # status
@@ -250,13 +283,13 @@ class StatusDatabaseProperty(BaseDatabaseProperty):
 # title
 class TitleDatabaseProperty(BaseDatabaseProperty):
     type: Literal["title"] = "title"
-    title: EmptyConfig
+    title: EmptyConfig = Field(default_factory=EmptyConfig)
 
 
 # url
 class URLDatabaseProperty(BaseDatabaseProperty):
     type: Literal["url"] = "url"
-    url: EmptyConfig
+    url: EmptyConfig = Field(default_factory=EmptyConfig)
 
 
 # Union for all Database Schema Properties
@@ -284,6 +317,7 @@ DatabaseProperty = Annotated[
         URLDatabaseProperty,
     ],
     Field(discriminator="type"),
+    # Field(),
 ]
 
 

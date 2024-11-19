@@ -50,7 +50,7 @@ class BaseRichTextObject(BaseModel):
     annotations: Optional[TextAnnotations] = Field(
         None, description="Formatting style for the text"
     )
-    plain_text: str
+    plain_text: Optional[str] = Field(None)
     href: Optional[str] = Field(None, description="Hyperlink for the text")
 
 

@@ -1,3 +1,5 @@
+from typing import Optional
+
 from uuid import UUID
 from pydantic import Field
 
@@ -9,8 +11,8 @@ from ..objects import UserObject, BotUserObject
 class ListAllUsersRequest(BaseModel):
     """Reference: https://developers.notion.com/reference/get-users"""
 
-    start_cursor: StartCursor = None
-    page_size: PageSize = None
+    start_cursor: Optional[StartCursor] = None
+    page_size: Optional[PageSize] = None
 
 
 ListAllUsersResponse = NotionPaginatedData[UserObject]
@@ -33,6 +35,7 @@ class RetrieveBotUserRequest(BaseModel):
 
 RetrieveBotUserResponse = BotUserObject
 """Reference: https://developers.notion.com/reference/get-self"""
+
 
 __all__ = [
     "ListAllUsersRequest",

@@ -8,7 +8,7 @@ from datetime import datetime
 from uuid import UUID
 
 from pydantic_api.base import BaseModel
-from .user import UserObject
+from .user import PartialUser
 from .block import RichTextObject
 from .parent import BlockParentObject, PageParentObject
 
@@ -29,7 +29,7 @@ class CommentObject(BaseModel):
     discussion_id: UUID
     created_time: datetime
     last_edited_time: datetime
-    created_by: UserObject
+    created_by: PartialUser
     rich_text: List[RichTextObject]
 
 

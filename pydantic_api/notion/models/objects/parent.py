@@ -57,19 +57,19 @@ ParentObject = Annotated[
 # The following classes are util classes which are not mentioned in the Notion API documentation.
 class ParentObjectFactory:
     @classmethod
-    def from_page_id(cls, page_id: UUID) -> PageParentObject:
+    def new_page_parent(cls, page_id: UUID) -> PageParentObject:
         return PageParentObject(page_id=page_id)
 
     @classmethod
-    def from_database_id(cls, database_id: UUID) -> DatabaseParentObject:
+    def new_database_parent(cls, database_id: UUID) -> DatabaseParentObject:
         return DatabaseParentObject(database_id=database_id)
 
     @classmethod
-    def from_workspace(cls) -> WorkspaceParentObject:
+    def new_workspace_parent(cls) -> WorkspaceParentObject:
         return WorkspaceParentObject()
 
     @classmethod
-    def from_block_id(cls, block_id: UUID) -> BlockParentObject:
+    def new_block_parent(cls, block_id: UUID) -> BlockParentObject:
         return BlockParentObject(block_id=block_id)
 
 

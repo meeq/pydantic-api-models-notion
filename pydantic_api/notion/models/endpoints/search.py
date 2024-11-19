@@ -20,8 +20,8 @@ class SearchByTitleRequest(BaseModel):
         None,
         description='A set of criteria, value and property keys, that limits the results to either only pages or only databases. Possible value values are "page" or "database". The only supported property value is "object".',
     )
-    start_cursor: StartCursor = None
-    page_size: PageSize = None
+    start_cursor: Optional[StartCursor] = None
+    page_size: Optional[PageSize] = None
 
 
 SearchByTitleResponse = NotionPaginatedData[Union[Page, Database]]

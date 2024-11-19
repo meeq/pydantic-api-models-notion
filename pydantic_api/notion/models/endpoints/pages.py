@@ -125,8 +125,8 @@ class RetrievePagePropertyItemRequest(BaseModel):
         ...,
         description="Identifier for a page property.",
     )
-    start_cursor: StartCursor = None
-    page_size: PageSize = None
+    start_cursor: Optional[StartCursor] = None
+    page_size: Optional[PageSize] = None
 
 
 RetrievePagePropertyItemResponse = Union[

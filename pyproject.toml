@@ -25,7 +25,8 @@ classifiers = [
 [tool.poetry.dependencies]
 python = "^3.8"
 emoji = "^2.14.0"
-pydantic-api-models = { git = "ssh://git@github.com/stevieflyer/pydantic-api-models.git" }
+pydantic-api-models = {path = "../pydantic-api-models"}
+notion-client = "^2.2.1"
 
 [build-system]
 requires = ["poetry-core>=1.5.0"]
