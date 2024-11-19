@@ -11,10 +11,10 @@ from pydantic_api.base import BaseModel
 from ..common import ColorLiteral
 from .common import (
     SelectOption,
-    DatabasePropertyTypeLiteral,
     RelationTypeLiteral,
     NumberFormatLiteral,
     RollupFunctionLiteral,
+    DatabasePropertyTypeLiteral,
 )
 
 
@@ -34,11 +34,6 @@ class BaseDatabaseProperty(BaseModel):
         None, description="The description of the property as it appears in Notion."
     )
     type: DatabasePropertyTypeLiteral
-
-    def dump_exclude_type(self):
-        raw_dict = self.dump_json_dict()
-        raw_dict.pop("type")
-        return raw_dict
 
     @classmethod
     def define(cls):
@@ -317,7 +312,6 @@ DatabaseProperty = Annotated[
         URLDatabaseProperty,
     ],
     Field(discriminator="type"),
-    # Field(),
 ]
 
 
