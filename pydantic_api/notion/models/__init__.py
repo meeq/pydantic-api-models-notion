@@ -1,2 +1,2 @@
-from .api import *
-from .entities import *
+from .objects import *
+from .endpoints import *

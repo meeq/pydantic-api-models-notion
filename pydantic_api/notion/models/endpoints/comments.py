@@ -1,6 +1,9 @@
+from typing import List
+
+from uuid import UUID
 from pydantic import BaseModel, Field
 
-from ..entities import CommentObject
+from ..objects import CommentObject, RichTextObject
 from .base import NotionPaginatedData, StartCursor, PageSize
 
 
@@ -9,6 +12,7 @@ class CreateCommentRequest(BaseModel):
 
     start_cursor: StartCursor = None
     page_size: PageSize = None
+    rich_text: List[RichTextObject]
 
 
 CreateCommentResponse = CommentObject
@@ -18,7 +22,10 @@ CreateCommentResponse = CommentObject
 class RetrieveCommentsRequest(BaseModel):
     """Reference: https://developers.notion.com/reference/retrieve-a-comment"""
 
-    block_id: str = Field(..., description="Identifier for a Notion block or page")
+    block_id: UUID = Field(
+        ...,
+        description="Identifier for a Notion block or page, a uuidv4 string. Reference: https://developers.notion.com/reference/block#keys",
+    )
     start_cursor: StartCursor = None
     page_size: PageSize = None
 
