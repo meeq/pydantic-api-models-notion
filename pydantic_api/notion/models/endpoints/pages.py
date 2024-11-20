@@ -142,8 +142,8 @@ class UpdatePagePropertiesRequest(BaseModel):
         ...,
         description="The identifier for the Notion page to be updated.",
     )
-    properties: Dict[str, PageProperty] = Field(
-        ...,
+    properties: Optional[Dict[str, PageProperty]] = Field(
+        None,
         description="The property values to update for the page. The keys are the names or IDs of the property and the values are property values. If a page property ID is not included, then it is not changed.",
     )
     archived: Optional[bool] = Field(
