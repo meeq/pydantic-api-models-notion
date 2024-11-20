@@ -11,7 +11,9 @@ from typing import Literal, Optional, Annotated, Union
 from pydantic import Field, HttpUrl
 from pydantic_api.base import BaseModel
 
-from .common import FileObjectTypeLiteral
+
+FileObjectTypeLiteral = Literal["file", "external"]
+"""Reference: https://developers.notion.com/reference/file-object"""
 
 
 class _FileExternal(BaseModel):
@@ -115,4 +117,7 @@ __all__ = [
     "UploadedFileObject",
     "FileObject",
     "FileObjectFactory",
+    "_BaseFileObject",
+    "_FileExternal",
+    "_FileUploaded",
 ]

@@ -5,7 +5,7 @@ Reference: https://developers.notion.com/reference/block
 from __future__ import annotations
 from uuid import UUID
 from datetime import datetime
-from typing import Union, Optional, Literal, List, Dict, Annotated
+from typing import Union, Optional, Literal, List, Annotated
 
 from pydantic_api.base import BaseModel
 from pydantic import Field, HttpUrl, PositiveInt
@@ -17,9 +17,8 @@ from ..common import (
     IconObject,
     ColorLiteral,
     CodeLanguageLiteral,
-    FileObjectTypeLiteral,
 )
-from ..file import FileObject
+from ..file import FileObject, _BaseFileObject, _FileExternal, _FileUploaded
 
 
 BlockTypeLiteral = Literal[
@@ -193,6 +192,11 @@ class CodeBlockData(BaseModel):
     )
 
 
+class CodeBlock(BaseBlock):
+    type: Literal["code"] = "code"
+    code: CodeBlockData
+
+
 # column: Refer to https://developers.notion.com/reference/block#column_list_and_column
 class ColumnBlock(BaseBlock):
     """
@@ -276,16 +280,33 @@ class EquationBlock(BaseBlock):
 
 
 # file
-class FileBlockData(FileObject):
+class BaseBlockFileObject(_BaseFileObject):
     caption: List[RichTextObject] = Field(
         default_factory=list,
         description="The caption for the file block.",
     )
 
 
+class ExternalBlockFileObject(_BaseFileObject):
+    type: Literal["external"] = "external"
+    external: _FileExternal
+
+
+class UploadedBlockFileObject(_BaseFileObject):
+    type: Literal["file"] = "file"
+    file: _FileUploaded
+
+
+BlockFileObject = Annotated[
+    Union[ExternalBlockFileObject, UploadedBlockFileObject],
+    Field(discriminator="type"),
+]
+"""FileObject + caption field"""
+
+
 class FileBlock(BaseBlock):
     type: Literal["file"] = "file"
-    file: FileBlockData
+    file: BlockFileObject
 
 
 # headings: Refer to https://developers.notion.com/reference/block#heading
@@ -398,16 +419,9 @@ class ParagraphBlock(BaseBlock):
 
 
 # pdf: Refer to https://developers.notion.com/reference/block#pdf
-class PdfBlockData(FileObject):
-    caption: List[RichTextObject] = Field(
-        default_factory=list,
-        description="The caption for the PDF block.",
-    )
-
-
 class PdfBlock(BaseBlock):
     type: Literal["pdf"] = "pdf"
-    pdf: PdfBlockData
+    pdf: BlockFileObject
 
 
 # quote: Refer to https://developers.notion.com/reference/block#quote
@@ -561,56 +575,48 @@ class ToggleBlock(BaseBlock):
 
 
 # video: Refer to https://developers.notion.com/reference/block#video
-class VideoBlockData(FileObject):
-
-    pass
-
-
 class VideoBlock(BaseBlock):
     """
     📘 Vimeo video links are not currently supported by the video block type. However, they can be embedded in Notion pages using the embed block type. See Embed for more information.
     """
 
     type: Literal["video"] = "video"
-    video: VideoBlockData
+    video: BlockFileObject
 
 
 # Union Type
-BlockObject = Annotated[
-    Union[
-        BookmarkBlock,
-        BreadcrumbBlock,
-        BulletedListItem,
-        CalloutBlock,
-        ChildDatabaseBlock,
-        ChildPageBlock,
-        ColumnBlock,
-        ColumnListBlock,
-        DividerBlock,
-        EmbedBlock,
-        EquationBlock,
-        FileBlock,
-        Heading1Block,
-        Heading2Block,
-        Heading3Block,
-        ImageBlock,
-        LinkPreviewBlock,
-        NumberedListItem,
-        ParagraphBlock,
-        PdfBlock,
-        QuoteBlock,
-        SyncedBlock,
-        TableBlock,
-        TableRowBlock,
-        TableOfContentsBlock,
-        TemplateBlock,
-        TodoBlock,
-        ToggleBlock,
-        VideoBlock,
-    ],
-    Field(discriminator="type"),
+BlockObject = Union[
+    BookmarkBlock,
+    BreadcrumbBlock,
+    BulletedListItem,
+    CalloutBlock,
+    ChildDatabaseBlock,
+    ChildPageBlock,
+    CodeBlock,
+    ColumnBlock,
+    ColumnListBlock,
+    DividerBlock,
+    EmbedBlock,
+    EquationBlock,
+    FileBlock,
+    Heading1Block,
+    Heading2Block,
+    Heading3Block,
+    ImageBlock,
+    LinkPreviewBlock,
+    NumberedListItem,
+    ParagraphBlock,
+    PdfBlock,
+    QuoteBlock,
+    SyncedBlock,
+    TableBlock,
+    TableRowBlock,
+    TableOfContentsBlock,
+    TemplateBlock,
+    TodoBlock,
+    ToggleBlock,
+    VideoBlock,
 ]
-
 
 __all__ = [
     "BlockObject",
@@ -620,6 +626,7 @@ __all__ = [
     "CalloutBlock",
     "ChildDatabaseBlock",
     "ChildPageBlock",
+    "CodeBlock",
     "ColumnBlock",
     "ColumnListBlock",
     "DividerBlock",

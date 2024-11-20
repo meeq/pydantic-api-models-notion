@@ -130,9 +130,6 @@ CodeLanguageLiteral = Literal[
 """Reference: https://developers.notion.com/reference/block#code"""
 
 
-FileObjectTypeLiteral = Literal["file", "external"]
-"""Reference: https://developers.notion.com/reference/file-object"""
-
 __all__ = [
     "IconObject",
     "IconObjectFactory",
@@ -140,5 +137,4 @@ __all__ = [
     "CoverObjectFactory",
     "ColorLiteral",
     "CodeLanguageLiteral",
-    "FileObjectTypeLiteral",
 ]
