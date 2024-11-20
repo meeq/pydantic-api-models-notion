@@ -57,6 +57,18 @@ from .users import (
     RetrieveBotUserRequest,
     RetrieveBotUserResponse,
 )
+from .blocks import (
+    AppendBlockChildrenRequest,
+    AppendBlockChildrenResponse,
+    RetrieveBlockRequest,
+    RetrieveBlockResponse,
+    RetrieveBlockChildrenRequest,
+    RetrieveBlockChildrenResponse,
+    # UpdateBlockRequest,
+    UpdateBlockResponse,
+    DeleteBlockRequest,
+    DeleteBlockResponse,
+)
 from .databases import (
     CreateDatabaseRequest,
     CreateDatabaseResponse,
@@ -75,7 +87,6 @@ from .comments import (
 )
 from .search import SearchByTitleRequest, SearchByTitleResponse
 
-# from .blocks import *
 
 __all__ = [
     # base
@@ -116,6 +127,17 @@ __all__ = [
     "RetrieveUserResponse",
     "RetrieveBotUserRequest",
     "RetrieveBotUserResponse",
+    # blocks
+    "AppendBlockChildrenRequest",
+    "AppendBlockChildrenResponse",
+    "RetrieveBlockRequest",
+    "RetrieveBlockResponse",
+    "RetrieveBlockChildrenRequest",
+    "RetrieveBlockChildrenResponse",
+    # "UpdateBlockRequest",
+    "UpdateBlockResponse",
+    "DeleteBlockRequest",
+    "DeleteBlockResponse",
     # databases
     "CreateDatabaseRequest",
     "CreateDatabaseResponse",

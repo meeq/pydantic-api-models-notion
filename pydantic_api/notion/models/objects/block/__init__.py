@@ -6,3 +6,4 @@ Reference:
 """
 
 from .rich_text import *
+from .block import *

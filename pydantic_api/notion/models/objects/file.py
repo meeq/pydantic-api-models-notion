@@ -9,11 +9,9 @@ from datetime import datetime
 from typing import Literal, Optional, Annotated, Union
 
 from pydantic import Field, HttpUrl
-
 from pydantic_api.base import BaseModel
 
-
-FileObjectTypeLiteral = Literal["external", "file"]
+from .common import FileObjectTypeLiteral
 
 
 class _FileExternal(BaseModel):
