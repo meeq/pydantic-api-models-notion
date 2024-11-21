@@ -72,6 +72,15 @@ class DateProperty(BasePageProperty):
         description="The value of the date property, including start and optional end.",
     )
 
+    @classmethod
+    def new(
+        cls,
+        start: datetime,
+        end: Optional[datetime] = None,
+        time_zone: Optional[str] = None,
+    ):
+        return cls(date=DateValue(start=start, end=end, time_zone=time_zone))
+
 
 # email: Refer to https://developers.notion.com/reference/page-property-values#email
 class EmailProperty(BasePageProperty):
@@ -283,7 +292,7 @@ class TitleProperty(BasePageProperty):
     title: List[RichTextObject]
 
     @classmethod
-    def create(
+    def new(
         cls,
         text: str,
     ):

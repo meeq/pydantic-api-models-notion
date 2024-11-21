@@ -6,6 +6,7 @@ from pydantic import Field
 
 from pydantic_api.base import BaseModel
 from .user import PartialUser
+from .properties import TitleProperty
 from .common import IconObject, CoverObject
 from .parent import DatabaseParentObject, PageParentObject, WorkspaceParentObject
 
@@ -40,8 +41,14 @@ class Page(BaseModel):
     public_url: Optional[str] = Field(None)
 
     @property
-    def title_property(self) -> dict:
-        return self.properties.get("title")
+    def title_property(self):
+        return TitleProperty.model_validate(self.properties.get("title"))
+
+    @property
+    def plain_text_title(self) -> str:
+        return "".join(
+            [t.plain_text for t in self.title_property.title if t.plain_text]
+        )
 
 
 __all__ = [

@@ -3,25 +3,20 @@ Reference: https://developers.notion.com/reference/property-object
 """
 
 from datetime import datetime
-from typing import List, Optional, Literal, Union, Dict, Any, Annotated
+from typing import List, Optional, Literal, Dict, Any
 
 from uuid import UUID
 from pydantic import Field, HttpUrl
 
 from pydantic_api.base import BaseModel
 from .user import PartialUser
+from .block import RichTextObject
 from .parent import PageParentObject
 from .properties import DatabaseProperty
 from .common import IconObject, CoverObject
 
-# from .parent import WorkspaceParentObject, PageParentObject, BlockParentObject
-
 
 # Database Parent Types
-# ParentOfDatabase = Annotated[
-#     Union[PageParentObject, WorkspaceParentObject, BlockParentObject],
-#     Field(discriminator="type"),
-# ]
 ParentOfDatabase = PageParentObject
 """
 The type of the parent of a database. It could be a `PageParentObject`, `WorkspaceParent` or `BlockParent`. (Reference: https://developers.notion.com/reference/parent-object)
@@ -39,7 +34,7 @@ class Database(BaseModel):
     created_by: PartialUser
     last_edited_time: datetime
     last_edited_by: PartialUser
-    title: List[Dict[str, Any]] = Field(default_factory=list)
+    title: List[RichTextObject] = Field(default_factory=list)
     description: List[Dict[str, Any]] = Field(default_factory=list)
     icon: Optional[IconObject] = Field(None)
     cover: Optional[CoverObject] = Field(None)
@@ -47,6 +42,10 @@ class Database(BaseModel):
     parent: ParentOfDatabase
     archived: bool
     url: HttpUrl
+
+    @property
+    def plain_text_title(self) -> str:
+        return "".join([t.plain_text for t in self.title if t.plain_text])
 
 
 __all__ = [

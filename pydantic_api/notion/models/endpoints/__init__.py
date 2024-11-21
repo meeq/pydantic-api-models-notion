@@ -85,7 +85,11 @@ from .comments import (
     RetrieveCommentsRequest,
     RetrieveCommentsResponse,
 )
-from .search import SearchByTitleRequest, SearchByTitleResponse
+from .search import (
+    SearchByTitleRequest,
+    SearchByTitleResponse,
+    SearchByTitleFilterObject,
+)
 
 
 __all__ = [
@@ -153,6 +157,7 @@ __all__ = [
     "RetrieveCommentsRequest",
     "RetrieveCommentsResponse",
     # search
+    "SearchByTitleFilterObject",
     "SearchByTitleRequest",
     "SearchByTitleResponse",
 ]

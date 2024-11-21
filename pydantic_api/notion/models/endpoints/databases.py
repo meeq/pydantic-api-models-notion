@@ -11,6 +11,8 @@ from ..objects import (
     RichTextObject,
     PageParentObject,
     DatabaseProperty,
+    IconObject,
+    CoverObject,
 )
 
 
@@ -43,6 +45,14 @@ class CreateDatabaseRequest(BaseModel):
     properties: Dict[str, DatabaseProperty] = Field(
         ...,
         description="Property schema of database. The keys are the names of properties as they appear in Notion and the values are property schema objects.",
+    )
+    icon: Optional[IconObject] = Field(
+        None,
+        description="The icon of the database. Not listed in the documentation but shown in the official example.",
+    )
+    cover: Optional[CoverObject] = Field(
+        None,
+        description="The cover of the database. Not listed in the documentation but shown in the official example.",
     )
 
     @model_validator(mode="after")

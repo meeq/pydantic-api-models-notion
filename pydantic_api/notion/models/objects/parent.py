@@ -2,7 +2,6 @@
 Reference: https://developers.notion.com/reference/parent-object
 """
 
-from enum import StrEnum
 from typing import Literal, Union, Annotated
 
 from uuid import UUID
@@ -11,38 +10,34 @@ from pydantic import Field
 from pydantic_api.base import BaseModel
 
 
-class ParentObjectTypeEnum(StrEnum):
-    DATABASE_ID = "database_id"
-    PAGE_ID = "page_id"
-    WORKSPACE = "workspace"
-    BLOCK_ID = "block_id"
+ParentObjectTypeLiteral = Literal["database_id", "page_id", "workspace", "block_id"]
 
 
 class DatabaseParentObject(BaseModel):
     """Database as a parent."""
 
-    type: Literal[ParentObjectTypeEnum.DATABASE_ID] = ParentObjectTypeEnum.DATABASE_ID
+    type: Literal["database_id"] = "database_id"
     database_id: UUID
 
 
 class PageParentObject(BaseModel):
     """Page as a parent."""
 
-    type: Literal[ParentObjectTypeEnum.PAGE_ID] = ParentObjectTypeEnum.PAGE_ID
+    type: Literal["page_id"] = "page_id"
     page_id: UUID
 
 
 class WorkspaceParentObject(BaseModel):
     """Workspace as a parent. I.e. a root-level page in the workspace."""
 
-    type: Literal[ParentObjectTypeEnum.WORKSPACE] = ParentObjectTypeEnum.WORKSPACE
+    type: Literal["workspace"] = "workspace"
     workspace: Literal[True] = True
 
 
 class BlockParentObject(BaseModel):
     """Block as a parent."""
 
-    type: Literal[ParentObjectTypeEnum.BLOCK_ID] = ParentObjectTypeEnum.BLOCK_ID
+    type: Literal["block_id"] = "block_id"
     block_id: UUID
 
 
@@ -74,7 +69,7 @@ class ParentObjectFactory:
 
 
 __all__ = [
-    "ParentObjectTypeEnum",
+    "ParentObjectTypeLiteral",
     "DatabaseParentObject",
     "PageParentObject",
     "WorkspaceParentObject",
