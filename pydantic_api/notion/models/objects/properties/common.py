@@ -1,6 +1,5 @@
 from typing import Literal, Optional
 
-from uuid import UUID
 from pydantic import Field, model_validator
 
 from pydantic_api.base import BaseModel
@@ -18,7 +17,7 @@ class SelectOption(BaseModel):
     """
 
     color: Optional[ColorLiteral] = Field(None)
-    id: Optional[UUID] = None
+    id: Optional[str] = None
     name: Optional[str] = None
 
     @model_validator(mode="after")
@@ -40,7 +39,7 @@ class SelectOption(BaseModel):
 
 class StatusOption(BaseModel):
     color: Optional[ColorLiteral] = Field(None)
-    id: Optional[UUID] = None
+    id: Optional[str] = None
     name: Optional[str] = None
 
     @model_validator(mode="after")

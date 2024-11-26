@@ -255,7 +255,7 @@ class StatusGroup(BaseModel):
     color: Optional[ColorLiteral] = Field(None)
     id: Optional[str] = Field(None)
     name: Optional[str] = Field(None)
-    option_ids: Optional[List[UUID]] = Field(
+    option_ids: Optional[List[str]] = Field(
         None,
         description="A sorted list of ids of all of the options that belong to a group.",
     )

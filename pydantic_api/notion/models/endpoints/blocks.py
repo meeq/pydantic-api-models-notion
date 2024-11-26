@@ -1,9 +1,8 @@
 from typing import List, Optional
 
-from uuid import UUID
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field
 
-from ..objects import CommentObject, RichTextObject, PageParentObject, BlockObject
+from ..objects import BlockObject
 from .base import NotionPaginatedData, StartCursor, PageSize
 
 
