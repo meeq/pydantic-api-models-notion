@@ -147,36 +147,51 @@ class PhoneNumberDatabaseProperty(BaseDatabaseProperty):
 
 
 # relation
-class RelationPropertyConfig(BaseModel):
-    type: Optional[RelationTypeLiteral] = None
+class SinglePropertyData(BaseModel):
+    pass
+
+
+class SinglePropertyRelationData(BaseModel):
+    type: Literal["single_property"] = "single_property"
     database_id: UUID = Field(
         ...,
         description="The database that the relation property refers to. The corresponding linked page values must belong to the database in order to be valid.",
     )
-    synced_property_id: Optional[str] = Field(
-        ...,
-        description="The id of the corresponding property that is updated in the related database when this property is changed.",
-    )
-    synced_property_name: Optional[str] = Field(
-        ...,
-        description="The name of the corresponding property that is updated in the related database when this property is changed.",
+    single_property: SinglePropertyData = Field(
+        default_factory=SinglePropertyData,
+        description="The configuration for a single property relation.",
     )
 
-    @model_validator(mode="after")
-    def ensure_either_name_or_id_is_provided(self):
-        if self.type == "single_property":
-            if self.synced_property_name is None and self.synced_property_id is None:
-                raise ValueError(
-                    "Either synced_property_name or synced_property_id is required."
-                )
-        elif self.type == "dual_property":
-            pass
-        return self
 
-
-class RelationDatabaseProperty(BaseDatabaseProperty):
+class SinglePropertyRelationDatabaseProperty(BaseModel):
     type: Literal["relation"] = "relation"
-    relation: RelationPropertyConfig
+    relation: SinglePropertyRelationData
+
+
+class DualPropertyData(BaseModel):
+    pass
+
+
+class DualPropertyData(BaseModel):
+    type: Literal["dual_property"] = "dual_property"
+    database_id: UUID = Field(
+        ...,
+        description="The database that the relation property refers to. The corresponding linked page values must belong to the database in order to be valid.",
+    )
+    dual_property: DualPropertyData = Field(
+        default_factory=DualPropertyData,
+        description="The configuration for a dual property relation.",
+    )
+
+
+class DualPropertyRelationDatabaseProperty(BaseModel):
+    type: Literal["relation"] = "relation"
+    relation: DualPropertyData
+
+
+RelationDatabaseProperty = Union[
+    SinglePropertyRelationDatabaseProperty, DualPropertyRelationDatabaseProperty
+]
 
 
 # rich_text
@@ -288,30 +303,27 @@ class URLDatabaseProperty(BaseDatabaseProperty):
 
 
 # Union for all Database Schema Properties
-DatabaseProperty = Annotated[
-    Union[
-        CheckboxDatabaseProperty,
-        CreatedByDatabaseProperty,
-        CreatedTimeDatabaseProperty,
-        DateDatabaseProperty,
-        EmailDatabaseProperty,
-        FilesDatabaseProperty,
-        FormulaDatabaseProperty,
-        LastEditedByDatabaseProperty,
-        LastEditedTimeDatabaseProperty,
-        MultiSelectDatabaseProperty,
-        NumberDatabaseProperty,
-        PeopleDatabaseProperty,
-        PhoneNumberDatabaseProperty,
-        RelationDatabaseProperty,
-        RichTextDatabaseProperty,
-        RollupDatabaseProperty,
-        SelectDatabaseProperty,
-        StatusDatabaseProperty,
-        TitleDatabaseProperty,
-        URLDatabaseProperty,
-    ],
-    Field(discriminator="type"),
+DatabaseProperty = Union[
+    CheckboxDatabaseProperty,
+    CreatedByDatabaseProperty,
+    CreatedTimeDatabaseProperty,
+    DateDatabaseProperty,
+    EmailDatabaseProperty,
+    FilesDatabaseProperty,
+    FormulaDatabaseProperty,
+    LastEditedByDatabaseProperty,
+    LastEditedTimeDatabaseProperty,
+    MultiSelectDatabaseProperty,
+    NumberDatabaseProperty,
+    PeopleDatabaseProperty,
+    PhoneNumberDatabaseProperty,
+    RelationDatabaseProperty,
+    RichTextDatabaseProperty,
+    RollupDatabaseProperty,
+    SelectDatabaseProperty,
+    StatusDatabaseProperty,
+    TitleDatabaseProperty,
+    URLDatabaseProperty,
 ]
 
 
