@@ -60,6 +60,7 @@ class StatusOption(BaseModel):
 
 
 DatabasePropertyTypeLiteral = Literal[
+    "button",
     "checkbox",
     "created_by",
     "created_time",
@@ -88,6 +89,7 @@ Reference: https://developers.notion.com/reference/property-object
 """
 
 PagePropertyTypeLiteral = Literal[
+    "button",
     "checkbox",
     "created_by",
     "created_time",

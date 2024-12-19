@@ -33,6 +33,11 @@ class BasePageProperty(BaseModel):
 
 
 # checkbox, Refer to https://developers.notion.com/reference/page-property-values#checkbox
+class ButtonProperty(BasePageProperty):
+    type: Literal["button"] = "button"
+    button: dict = Field(default_factory=dict)
+
+
 class CheckboxProperty(BasePageProperty):
     type: Literal["checkbox"] = "checkbox"
     checkbox: bool = Field(
@@ -349,6 +354,7 @@ class VerificationProperty(BasePageProperty):
 # Union types
 PageProperty = Annotated[
     Union[
+        ButtonProperty,
         CheckboxProperty,
         CreatedByProperty,
         CreatedTimeProperty,
@@ -377,6 +383,7 @@ PageProperty = Annotated[
 
 
 __all__ = [
+    "ButtonProperty",
     "CheckboxProperty",
     "CreatedByProperty",
     "CreatedTimeProperty",

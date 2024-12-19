@@ -41,6 +41,11 @@ class BaseDatabaseProperty(BaseModel):
 
 
 # Specific Database Property Schemas
+class ButtonDatabaseProperty(BaseDatabaseProperty):
+    type: Literal["button"] = "button"
+    button: EmptyConfig = Field(default_factory=EmptyConfig)
+
+
 class CheckboxDatabaseProperty(BaseDatabaseProperty):
     type: Literal["checkbox"] = "checkbox"
     checkbox: EmptyConfig = Field(default_factory=EmptyConfig)
@@ -304,6 +309,7 @@ class URLDatabaseProperty(BaseDatabaseProperty):
 
 # Union for all Database Schema Properties
 DatabaseProperty = Union[
+    ButtonDatabaseProperty,
     CheckboxDatabaseProperty,
     CreatedByDatabaseProperty,
     CreatedTimeDatabaseProperty,
@@ -328,6 +334,7 @@ DatabaseProperty = Union[
 
 
 __all__ = [
+    "ButtonDatabaseProperty",
     "CheckboxDatabaseProperty",
     "CreatedByDatabaseProperty",
     "CreatedTimeDatabaseProperty",
