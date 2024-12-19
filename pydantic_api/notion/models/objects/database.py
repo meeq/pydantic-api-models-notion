@@ -11,13 +11,13 @@ from pydantic import Field, HttpUrl
 from pydantic_api.base import BaseModel
 from .user import PartialUser
 from .block import RichTextObject
-from .parent import PageParentObject
+from .parent import PageParentObject, BlockParentObject
 from .properties import DatabaseProperty
 from .common import IconObject, CoverObject
 
 
 # Database Parent Types
-ParentOfDatabase = PageParentObject
+ParentOfDatabase = PageParentObject | BlockParentObject
 """
 The type of the parent of a database. It could be a `PageParentObject`, `WorkspaceParent` or `BlockParent`. (Reference: https://developers.notion.com/reference/parent-object)
 
