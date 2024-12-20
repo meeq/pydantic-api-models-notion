@@ -44,7 +44,7 @@ class ExternalFileObject(_BaseFileObject):
     external: _FileExternal
 
     @classmethod
-    def new(cls, url: HttpUrl):
+    def new(cls, url: HttpUrl, name: str | None = None):
         """
         Args:
             url (str): The URL of the external file.
@@ -52,7 +52,7 @@ class ExternalFileObject(_BaseFileObject):
         Returns:
             ExternalFileObject: An instance of ExternalFileObject.
         """
-        return cls(external=_FileExternal(url=url))
+        return cls(external=_FileExternal(url=url), name=name)
 
 
 class UploadedFileObject(_BaseFileObject):
@@ -62,7 +62,12 @@ class UploadedFileObject(_BaseFileObject):
     file: _FileUploaded
 
     @classmethod
-    def new(cls, url: HttpUrl, expire_time: Optional[datetime] = None):
+    def new(
+        cls,
+        url: HttpUrl,
+        expire_time: Optional[datetime] = None,
+        name: str | None = None,
+    ):
         """
         Args:
             url (str): The URL of the uploaded file.
@@ -71,7 +76,7 @@ class UploadedFileObject(_BaseFileObject):
         Returns:
             UploadedFileObject: An instance of UploadedFileObject
         """
-        return cls(file=_FileUploaded(url=url, expiry_time=expire_time))
+        return cls(file=_FileUploaded(url=url, expiry_time=expire_time), name=name)
 
 
 FileObject = Annotated[
@@ -82,21 +87,25 @@ FileObject = Annotated[
 
 class FileObjectFactory:
     @classmethod
-    def new_external(cls, url: HttpUrl) -> ExternalFileObject:
+    def new_external(cls, url: HttpUrl, name: str | None = None) -> ExternalFileObject:
         """
         Create a new External File Object
 
         Args:
             url (str): The URL of the external file.
+            name (str, optional): The name of the file to discriminate it. Defaults to None.
 
         Returns:
             ExternalFileObject: An instance of ExternalFileObject.
         """
-        return ExternalFileObject.new(url=url)
+        return ExternalFileObject.new(url=url, name=name)
 
     @classmethod
     def new_uploaded(
-        cls, url: HttpUrl, expire_time: Optional[datetime] = None
+        cls,
+        url: HttpUrl,
+        expire_time: Optional[datetime] = None,
+        name: str | None = None,
     ) -> UploadedFileObject:
         """
         Create a new Uploaded File Object
@@ -104,11 +113,12 @@ class FileObjectFactory:
         Args:
             url (str): The URL of the uploaded file.
             expire_time (datetime, optional): The time at which the file will expire. Defaults to None.
+            name (str, optional): The name of the file to discriminate it. Defaults to None.
 
         Returns:
             UploadedFileObject: An instance of UploadedFileObject
         """
-        return UploadedFileObject.new(url=url, expire_time=expire_time)
+        return UploadedFileObject.new(url=url, expire_time=expire_time, name=name)
 
 
 __all__ = [
