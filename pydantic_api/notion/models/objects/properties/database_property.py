@@ -307,6 +307,24 @@ class URLDatabaseProperty(BaseDatabaseProperty):
     url: EmptyConfig = Field(default_factory=EmptyConfig)
 
 
+# unique id
+class UniqueIdPropertyConfig(EmptyConfig):
+    """
+    The configuration for a unique ID property.
+    """
+
+    prefix: str | None = None
+
+
+class UniqueIdDatabaseProperty(BaseDatabaseProperty):
+    type: Literal["unique_id"] = "unique_id"
+    unique_id: UniqueIdPropertyConfig
+
+    @classmethod
+    def define(cls, prefix: str | None = None):
+        return cls(unique_id=UniqueIdPropertyConfig(prefix=prefix))
+
+
 # Union for all Database Schema Properties
 DatabaseProperty = Union[
     ButtonDatabaseProperty,
@@ -330,6 +348,7 @@ DatabaseProperty = Union[
     StatusDatabaseProperty,
     TitleDatabaseProperty,
     URLDatabaseProperty,
+    UniqueIdDatabaseProperty,
 ]
 
 
@@ -355,6 +374,7 @@ __all__ = [
     "StatusDatabaseProperty",
     "TitleDatabaseProperty",
     "URLDatabaseProperty",
+    "UniqueIdDatabaseProperty",
     # Union Type
     "DatabaseProperty",
 ]

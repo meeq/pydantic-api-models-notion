@@ -81,6 +81,7 @@ DatabasePropertyTypeLiteral = Literal[
     "status",
     "title",
     "url",
+    "unique_id",
 ]
 """
 Database Property Type Enum(typed as Literal in this implementation).
