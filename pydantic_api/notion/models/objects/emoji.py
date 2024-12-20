@@ -19,8 +19,8 @@ class EmojiObject(BaseModel):
     @field_validator("emoji")
     @classmethod
     def ensure_valid_emoji_character(cls, v: str):
-        if len(v) > 1:
-            raise ValueError("Emoji must be a single character.")
+        # if len(v) > 1:
+        # raise ValueError("Emoji must be a single character.")
         if not emoji.is_emoji(v):
             raise ValueError("Invalid emoji character: {v}")
         return v
