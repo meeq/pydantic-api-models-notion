@@ -4,29 +4,7 @@ from pydantic import Field
 
 from pydantic_api.base import BaseModel
 
-
-TextAnnotationColorLiteral = Literal[
-    "default",
-    "blue",
-    "blue_background",
-    "brown",
-    "brown_background",
-    "default",
-    "gray",
-    "gray_background",
-    "green",
-    "green_background",
-    "orange",
-    "orange_background",
-    "pink",
-    "pink_background",
-    "purple",
-    "purple_background",
-    "red",
-    "red_background",
-    "yellow",
-    "yellow_background",
-]
+from pydantic_api.notion.models.objects.common import ColorLiteral
 
 
 class TextAnnotations(BaseModel):
@@ -37,7 +15,7 @@ class TextAnnotations(BaseModel):
     strikethrough: bool
     underline: bool
     code: bool
-    color: TextAnnotationColorLiteral
+    color: ColorLiteral
 
 
 RichTextTypeLiteral = Literal["text", "mention", "equation"]
@@ -55,7 +33,6 @@ class BaseRichTextObject(BaseModel):
 
 
 __all__ = [
-    "TextAnnotationColorLiteral",
     "TextAnnotations",
     "RichTextTypeLiteral",
     "BaseRichTextObject",

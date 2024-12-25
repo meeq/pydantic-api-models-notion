@@ -2,7 +2,7 @@
 Reference: https://developers.notion.com/reference/rich-text
 """
 
-from .base import TextAnnotationColorLiteral, TextAnnotations, RichTextTypeLiteral
+from .base import TextAnnotations, RichTextTypeLiteral
 from .text import TextObject, TextRichTextObject
 from .equation import EquationObject, EquationRichTextObject
 from .mention import (
@@ -30,7 +30,6 @@ from .rich_text import RichTextObject, RichTextObjectFactory
 
 __all__ = [
     # Base
-    "TextAnnotationColorLiteral",
     "TextAnnotations",
     "RichTextTypeLiteral",
     # Text

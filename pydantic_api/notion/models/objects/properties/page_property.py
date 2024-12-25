@@ -9,8 +9,8 @@ from uuid import UUID
 from pydantic import Field, EmailStr, HttpUrl
 
 from pydantic_api.base import BaseModel
-from ..user import UserObject
-from ..file import FileObject
+from ..user import UserObject, UserObjectFactory
+from ..file import FileObject, FileObjectFactory
 from ..block import RichTextObject, RichTextObjectFactory
 from .common import (
     SelectOption,
@@ -44,17 +44,38 @@ class CheckboxProperty(BasePageProperty):
         ..., description="Whether the checkbox is checked (true) or unchecked (false)."
     )
 
+    @classmethod
+    def new(
+        cls,
+        checked: bool,
+    ):
+        return cls(checkbox=checked)
+
 
 # created_by, Refer to https://developers.notion.com/reference/page-property-values#created_by
 class CreatedByProperty(BasePageProperty):
     type: Literal["created_by"] = "created_by"
     created_by: UserObject
 
+    @classmethod
+    def new_from_person(
+        cls,
+        email: str,
+    ):
+        return cls(created_by=UserObjectFactory.new_person_user(email=email))
+
 
 # created_time, Refer to https://developers.notion.com/reference/page-property-values#created_time
 class CreatedTimeProperty(BasePageProperty):
     type: Literal["created_time"] = "created_time"
     created_time: datetime
+
+    @classmethod
+    def new(
+        cls,
+        created_time: datetime,
+    ):
+        return cls(created_time=created_time)
 
 
 # date, Refer to https://developers.notion.com/reference/page-property-values#date
@@ -66,6 +87,15 @@ class DateValue(BaseModel):
         None, description="The end of the date range. If None, the date is not a range."
     )
     time_zone: Optional[str] = Field(None, description="")
+
+    @classmethod
+    def new(
+        cls,
+        start: datetime,
+        end: datetime | None = None,
+        time_zone: str | None = None,
+    ):
+        return cls(start=start, end=end, time_zone=time_zone)
 
 
 class DateProperty(BasePageProperty):
@@ -92,6 +122,13 @@ class EmailProperty(BasePageProperty):
     type: Literal["email"] = "email"
     email: EmailStr
 
+    @classmethod
+    def new(
+        cls,
+        email: str,
+    ):
+        return cls(email=email)
+
 
 # files: Refer to https://developers.notion.com/reference/page-property-values#files
 class FilesProperty(BasePageProperty):
@@ -99,6 +136,21 @@ class FilesProperty(BasePageProperty):
 
     type: Literal["files"] = "files"
     files: List[FileObject]
+
+    @classmethod
+    def new(
+        cls,
+        files: List[FileObject],
+    ):
+        return cls(files=files)
+
+    @classmethod
+    def new_external_single(
+        cls,
+        url: str,
+        name: str,
+    ):
+        return cls(files=[FileObjectFactory.new_external(url=url, name=name)])
 
 
 # formula: Refer to https://developers.notion.com/reference/page-property-values#formula
@@ -142,6 +194,13 @@ class LastEditedByProperty(BasePageProperty):
     type: Literal["last_edited_by"] = "last_edited_by"
     last_edited_by: UserObject
 
+    @classmethod
+    def new_from_person(
+        cls,
+        email: str,
+    ):
+        return cls(last_edited_by=UserObjectFactory.new_person_user(email=email))
+
 
 # last_edited_time: Refer to https://developers.notion.com/reference/page-property-values#last_edited_time
 class LastEditedTimeProperty(BasePageProperty):
@@ -166,6 +225,15 @@ class PeopleProperty(BasePageProperty):
     type: Literal["people"] = "people"
     people: List[UserObject]
 
+    @classmethod
+    def new_person_users(
+        cls,
+        emails: List[str],
+    ):
+        return cls(
+            people=[UserObjectFactory.new_person_user(email=email) for email in emails]
+        )
+
 
 # phone_number: Refer to https://developers.notion.com/reference/page-property-values#phone_number
 class PhoneNumberProperty(BasePageProperty):
@@ -175,6 +243,13 @@ class PhoneNumberProperty(BasePageProperty):
         description="A string representing a phone number. No phone number format is enforced.",
         examples=["415-867-5309"],
     )
+
+    @classmethod
+    def new(
+        cls,
+        phone_number: str,
+    ):
+        return cls(phone_number=phone_number)
 
 
 # relation: Refer to https://developers.notion.com/reference/page-property-values#relation
@@ -191,7 +266,7 @@ class RelationProperty(BasePageProperty):
     )
 
     @classmethod
-    def create(cls, relation: List[UUID]):
+    def new(cls, relation: List[UUID]):
         return cls(relation=[PageReference(id=uuid) for uuid in relation])
 
 
@@ -255,6 +330,13 @@ class RichTextProperty(BasePageProperty):
     type: Literal["rich_text"] = "rich_text"
     rich_text: List[RichTextObject]
 
+    @classmethod
+    def new_plain_text(
+        cls,
+        text: str,
+    ):
+        return cls(rich_text=[RichTextObjectFactory.new_text(content=text)])
+
 
 #  select: Refer to https://developers.notion.com/reference/page-property-values#select
 class SelectProperty(BasePageProperty):
@@ -262,12 +344,12 @@ class SelectProperty(BasePageProperty):
     select: SelectOption
 
     @classmethod
-    def create(
+    def new(
         cls,
         name: str,
         color: Optional[str] = None,
     ):
-        return cls(select=SelectOption.create(name=name, color=color))
+        return cls(select=SelectOption.new(name=name, color=color))
 
 
 # status
@@ -276,12 +358,12 @@ class StatusProperty(BasePageProperty):
     status: StatusOption
 
     @classmethod
-    def create(
+    def new(
         cls,
         name: str,
-        color: Optional[ColorLiteral] = "default",
+        color: Optional[ColorLiteral] = None,
     ):
-        return cls(status=StatusOption.create(name=name, color=color))
+        return cls(status=StatusOption.new(name=name, color=color))
 
     @classmethod
     def refer(
@@ -314,6 +396,13 @@ class TitleProperty(BasePageProperty):
 class URLProperty(BasePageProperty):
     type: Literal["url"] = "url"
     url: HttpUrl
+
+    @classmethod
+    def new(
+        cls,
+        url: str,
+    ):
+        return cls(url=url)
 
 
 # unique_id

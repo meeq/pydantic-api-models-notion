@@ -27,7 +27,7 @@ class SelectOption(BaseModel):
         return self
 
     @classmethod
-    def create(cls, name: str, color: ColorLiteral = "default"):
+    def new(cls, name: str, color: ColorLiteral | None = None):
         """Constructor used when creating a new SelectOption object."""
         return cls(name=name, color=color)
 
@@ -49,7 +49,7 @@ class StatusOption(BaseModel):
         return self
 
     @classmethod
-    def create(cls, name: str, color: ColorLiteral = "default"):
+    def new(cls, name: str, color: ColorLiteral | None = None):
         """Constructor used when creating a new StatusObject."""
         return cls(name=name, color=color)
 

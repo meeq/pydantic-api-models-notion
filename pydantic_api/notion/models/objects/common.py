@@ -9,8 +9,11 @@ IconObject = Union[ExternalFileObject, EmojiObject]
 
 class IconObjectFactory:
     @classmethod
-    def from_external_file(cls, url: str):
-        return ExternalFileObject.from_url(url=url)
+    def from_external_file(cls, url: str, name: str | None = None):
+        return ExternalFileObject.new(
+            url=url,
+            name=name,
+        )
 
     @classmethod
     def from_emoji(cls, emoji: str):

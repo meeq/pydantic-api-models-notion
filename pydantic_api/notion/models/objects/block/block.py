@@ -347,7 +347,7 @@ class HeadingBlockFactory:
     def new(
         cls,
         rich_text: List[RichTextObject],
-        color: ColorLiteral = "default",
+        color: ColorLiteral | None = None,
         is_toggleable: bool = False,
         heading_type: Literal["heading_1", "heading_2", "heading_3"] = "heading_1",
     ):

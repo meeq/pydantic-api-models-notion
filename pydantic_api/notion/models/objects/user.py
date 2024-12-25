@@ -52,6 +52,11 @@ class PersonUserObject(_BaseUserObject):
     type: Literal["person"] = "person"
     person: _PersonData = Field(default_factory=_PersonData)
 
+    @classmethod
+    def new(cls, email: EmailStr):
+        """Constructor used when creating a new PersonUser object."""
+        return cls(person=_PersonData(email=email))
+
 
 BotOwnerTypeLiteral = Literal["workspace", "user"]
 
@@ -105,10 +110,19 @@ Union of all User objects: `PersonUser` and `BotUser`.
 Reference: https://developers.notion.com/reference/user
 """
 
+
+class UserObjectFactory:
+    @classmethod
+    def new_person_user(cls, email: EmailStr):
+        """Create a new PersonUser object."""
+        return PersonUserObject.new(email)
+
+
 __all__ = [
     "UserObjectTypeLiteral",
     "PersonUserObject",
     "BotUserObject",
     "UserObject",
     "PartialUser",
+    "UserObjectFactory",
 ]
