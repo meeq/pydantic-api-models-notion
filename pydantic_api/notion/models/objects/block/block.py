@@ -94,10 +94,7 @@ class BookMarkBlockData(BaseModel):
 
 class BookmarkBlock(BaseBlock):
     type: Literal["bookmark"] = "bookmark"
-    bookmark: BookMarkBlockData = Field(
-        ...,
-        description="Bookmark block object",
-    )
+    bookmark: BookMarkBlockData
 
     @classmethod
     def new(cls, url: str, caption: str | None = None):
@@ -134,7 +131,7 @@ class BulletedListItemBlockData(BaseModel):
     )
 
 
-class BulletedListItem(BaseModel):
+class BulletedListItemBlock(BaseBlock):
     type: Literal["bulleted_list_item"] = "bulleted_list_item"
     bulleted_list_item: BulletedListItemBlockData = Field(
         ...,
@@ -566,7 +563,7 @@ class NumberedListItemBlockData(BaseModel):
     )
 
 
-class NumberedListItem(BaseModel):
+class NumberedListItemBlock(BaseBlock):
     type: Literal["numbered_list_item"] = "numbered_list_item"
     numbered_list_item: NumberedListItemBlockData = Field(
         ...,
@@ -744,6 +741,11 @@ class TableOfContentsBlock(BaseBlock):
     type: Literal["table_of_contents"] = "table_of_contents"
     table_of_contents: TableOfContentsBlockData
 
+    @classmethod
+    def new(cls, color: ColorLiteral | None = None):
+        table_of_contents_block_data = TableOfContentsBlockData(color=color)
+        return cls(table_of_contents=table_of_contents_block_data)
+
 
 # template: Refer to https://developers.notion.com/reference/block#template
 class TemplateBlockData(BaseModel):
@@ -815,6 +817,20 @@ class ToggleBlock(BaseBlock):
     type: Literal["toggle"] = "toggle"
     toggle: ToggleBlockData
 
+    @classmethod
+    def new(
+        cls,
+        rich_text: str,
+        color: ColorLiteral | None = None,
+        children: list | None = None,
+    ):
+        toggle_block_data = ToggleBlockData(
+            rich_text=[RichTextObjectFactory.new_text(content=rich_text)],
+            color=color,
+            children=children or [],
+        )
+        return cls(toggle=toggle_block_data)
+
 
 # video: Refer to https://developers.notion.com/reference/block#video
 class VideoBlock(BaseBlock):
@@ -825,12 +841,22 @@ class VideoBlock(BaseBlock):
     type: Literal["video"] = "video"
     video: BlockFileObject
 
+    @classmethod
+    def new(cls, url: str, caption: str | None = None):
+        video_block_data = ExternalBlockFileObject(
+            external=_FileExternal(url=url),
+            caption=(
+                [RichTextObjectFactory.new_text(content=caption)] if caption else []
+            ),
+        )
+        return cls(video=video_block_data)
+
 
 # Union Type
 BlockObject = Union[
     BookmarkBlock,
     BreadcrumbBlock,
-    BulletedListItem,
+    BulletedListItemBlock,
     CalloutBlock,
     ChildDatabaseBlock,
     ChildPageBlock,
@@ -846,7 +872,7 @@ BlockObject = Union[
     Heading3Block,
     ImageBlock,
     LinkPreviewBlock,
-    NumberedListItem,
+    NumberedListItemBlock,
     ParagraphBlock,
     PdfBlock,
     QuoteBlock,
@@ -864,7 +890,7 @@ __all__ = [
     "BlockObject",
     "BookmarkBlock",
     "BreadcrumbBlock",
-    "BulletedListItem",
+    "BulletedListItemBlock",
     "CalloutBlock",
     "ChildDatabaseBlock",
     "ChildPageBlock",
@@ -880,7 +906,7 @@ __all__ = [
     "Heading3Block",
     "ImageBlock",
     "LinkPreviewBlock",
-    "NumberedListItem",
+    "NumberedListItemBlock",
     "ParagraphBlock",
     "PdfBlock",
     "QuoteBlock",
