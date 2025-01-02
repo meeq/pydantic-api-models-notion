@@ -11,7 +11,7 @@ from pydantic_api.base import BaseModel
 from pydantic import Field, HttpUrl, PositiveInt
 
 from ..user import PartialUser
-from .rich_text import RichTextObject
+from .rich_text import RichTextObject, RichTextObjectFactory
 from ..parent import PageParentObject, BlockParentObject, DatabaseParentObject
 from ..common import (
     IconObject,
@@ -68,16 +68,16 @@ class BaseBlock(BaseModel):
     """Reference: https://developers.notion.com/reference/block#keys"""
 
     object: Literal["block"] = "block"
-    id: UUID
-    parent: ParentOfBlock
+    id: UUID | None = None
+    parent: ParentOfBlock | None = None
     type: BlockTypeLiteral
-    created_time: datetime
-    created_by: PartialUser
-    last_edited_time: datetime
-    last_edited_by: PartialUser
-    archived: bool
-    in_trash: bool
-    has_children: bool
+    created_time: datetime | None = None
+    created_by: PartialUser | None = None
+    last_edited_time: datetime | None = None
+    last_edited_by: PartialUser | None = None
+    archived: bool | None = None
+    in_trash: bool | None = None
+    has_children: bool | None = None
 
 
 class EmptyBlockData(BaseModel):
@@ -99,6 +99,16 @@ class BookmarkBlock(BaseBlock):
         description="Bookmark block object",
     )
 
+    @classmethod
+    def new(cls, url: str, caption: str | None = None):
+        bookmark_block_data = BookMarkBlockData(
+            caption=(
+                [RichTextObjectFactory.new_text(content=caption)] if caption else []
+            ),
+            url=url,
+        )
+        return cls(bookmark=bookmark_block_data)
+
 
 # breadcrumb: Refer to https://developers.notion.com/reference/block#breadcrumb
 class BreadcrumbBlock(BaseBlock):
@@ -107,14 +117,18 @@ class BreadcrumbBlock(BaseBlock):
         default_factory=EmptyBlockData,
     )
 
+    @classmethod
+    def new(cls):
+        return cls()
+
 
 # bulleted_list_item: Refer to https://developers.notion.com/reference/block#bulleted_list_item
 class BulletedListItemBlockData(BaseModel):
     rich_text: List[RichTextObject] = Field(
         default_factory=list, description="The content of the bulleted list item."
     )
-    color: ColorLiteral
-    children: List[BlockObject] = Field(
+    color: ColorLiteral | None = None
+    children: list = Field(
         default_factory=list,
         description="The nested child blocks (if any) of the bulleted_list_item block.",
     )
@@ -127,19 +141,47 @@ class BulletedListItem(BaseModel):
         description="Bulleted list item block object",
     )
 
+    @classmethod
+    def new(
+        cls,
+        rich_text: str,
+        color: ColorLiteral | None = None,
+        children: list | None = None,
+    ):
+        bulleted_list_item_data = BulletedListItemBlockData(
+            rich_text=[RichTextObjectFactory.new_text(content=rich_text)],
+            color=color,
+            children=children or [],
+        )
+        return cls(bulleted_list_item=bulleted_list_item_data)
+
 
 # callout: Refer to https://developers.notion.com/reference/block#callout
 class CalloutBlockData(BaseModel):
     rich_text: List[RichTextObject] = Field(
         default_factory=list, description="The content of the callout."
     )
-    icon: Optional[IconObject] = Field(None)
-    color: ColorLiteral
+    icon: IconObject | None = Field(None)
+    color: ColorLiteral | None = None
 
 
 class CalloutBlock(BaseBlock):
     type: Literal["callout"] = "callout"
     callout: CalloutBlockData
+
+    @classmethod
+    def new(
+        cls,
+        rich_text: str,
+        icon: IconObject | None = None,
+        color: ColorLiteral | None = None,
+    ):
+        callout_block_data = CalloutBlockData(
+            rich_text=[RichTextObjectFactory.new_text(content=rich_text)],
+            icon=icon,
+            color=color,
+        )
+        return cls(callout=callout_block_data)
 
 
 # child_database: Refer to https://developers.notion.com/reference/block#child_database
@@ -196,6 +238,22 @@ class CodeBlock(BaseBlock):
     type: Literal["code"] = "code"
     code: CodeBlockData
 
+    @classmethod
+    def new(
+        cls,
+        code: str,
+        caption: str | None = None,
+        language: CodeLanguageLiteral = "plain text",
+    ):
+        code_block_data = CodeBlockData(
+            language=language,
+            caption=(
+                [RichTextObjectFactory.new_text(content=caption)] if caption else []
+            ),
+            rich_text=[RichTextObjectFactory.new_text(content=code)],
+        )
+        return cls(code=code_block_data)
+
 
 # column: Refer to https://developers.notion.com/reference/block#column_list_and_column
 class ColumnBlock(BaseBlock):
@@ -207,6 +265,10 @@ class ColumnBlock(BaseBlock):
     column: EmptyBlockData = Field(
         default_factory=EmptyBlockData,
     )
+
+    @classmethod
+    def new(cls):
+        return cls()
 
 
 # column_list: Refer to https://developers.notion.com/reference/block#column_list_and_column
@@ -230,6 +292,10 @@ class ColumnListBlock(BaseBlock):
         default_factory=EmptyBlockData,
     )
 
+    @classmethod
+    def new(cls):
+        return cls()
+
 
 # divider: Refer to https://developers.notion.com/reference/block#divider
 class DividerBlock(BaseBlock):
@@ -237,6 +303,10 @@ class DividerBlock(BaseBlock):
     divider: EmptyBlockData = Field(
         default_factory=EmptyBlockData,
     )
+
+    @classmethod
+    def new(cls):
+        return cls()
 
 
 # embed: Refer to https://developers.notion.com/reference/block#embed
@@ -264,6 +334,11 @@ class EmbedBlock(BaseBlock):
     type: Literal["embed"] = "embed"
     embed: EmbedBlockData
 
+    @classmethod
+    def new(cls, url: str):
+        embed_block_data = EmbedBlockData(url=url)
+        return cls(embed=embed_block_data)
+
 
 # equation: Refer to https://developers.notion.com/reference/block#equation
 class EquationBlockData(BaseModel):
@@ -278,6 +353,11 @@ class EquationBlock(BaseBlock):
     type: Literal["equation"] = "equation"
     equation: EquationBlockData
 
+    @classmethod
+    def new(cls, expression: str):
+        equation_block_data = EquationBlockData(expression=expression)
+        return cls(equation=equation_block_data)
+
 
 # file
 class BaseBlockFileObject(_BaseFileObject):
@@ -287,12 +367,12 @@ class BaseBlockFileObject(_BaseFileObject):
     )
 
 
-class ExternalBlockFileObject(_BaseFileObject):
+class ExternalBlockFileObject(BaseBlockFileObject):
     type: Literal["external"] = "external"
     external: _FileExternal
 
 
-class UploadedBlockFileObject(_BaseFileObject):
+class UploadedBlockFileObject(BaseBlockFileObject):
     type: Literal["file"] = "file"
     file: _FileUploaded
 
@@ -308,13 +388,27 @@ class FileBlock(BaseBlock):
     type: Literal["file"] = "file"
     file: BlockFileObject
 
+    @classmethod
+    def new(
+        cls,
+        url: str,
+        caption: str | None = None,
+    ):
+        file_block_data = ExternalBlockFileObject(
+            external=_FileExternal(url=url),
+            caption=(
+                [RichTextObjectFactory.new_text(content=caption)] if caption else []
+            ),
+        )
+        return cls(file=file_block_data)
+
 
 # headings: Refer to https://developers.notion.com/reference/block#heading
 class HeadingBlockData(BaseModel):
     rich_text: List[RichTextObject] = Field(
         default_factory=list, description="The content of the heading."
     )
-    color: ColorLiteral
+    color: ColorLiteral | None = None
     is_toggleable: bool = Field(
         ...,
         description="Whether or not the heading block is a toggle heading or not. If true, then the heading block toggles and can support children. If false, then the heading block is a static heading block.",
@@ -325,15 +419,57 @@ class Heading1Block(BaseBlock):
     type: Literal["heading_1"] = "heading_1"
     heading_1: HeadingBlockData
 
+    @classmethod
+    def new(
+        cls,
+        rich_text: str,
+        color: ColorLiteral | None = None,
+        is_toggleable: bool = False,
+    ):
+        heading_block_data = HeadingBlockData(
+            rich_text=[RichTextObjectFactory.new_text(content=rich_text)],
+            color=color,
+            is_toggleable=is_toggleable,
+        )
+        return cls(heading_1=heading_block_data)
+
 
 class Heading2Block(BaseBlock):
     type: Literal["heading_2"] = "heading_2"
     heading_2: HeadingBlockData
 
+    @classmethod
+    def new(
+        cls,
+        rich_text: str,
+        color: ColorLiteral | None = None,
+        is_toggleable: bool = False,
+    ):
+        heading_block_data = HeadingBlockData(
+            rich_text=[RichTextObjectFactory.new_text(content=rich_text)],
+            color=color,
+            is_toggleable=is_toggleable,
+        )
+        return cls(heading_2=heading_block_data)
+
 
 class Heading3Block(BaseBlock):
     type: Literal["heading_3"] = "heading_3"
     heading_3: HeadingBlockData
+
+    @classmethod
+    def new(
+        cls,
+        rich_text: str,
+        color: ColorLiteral | None = None,
+        is_toggleable: bool = False,
+    ):
+        heading_block_data = HeadingBlockData(
+            rich_text=[RichTextObjectFactory.new_text(content=rich_text)],
+            color=color,
+            is_toggleable=is_toggleable,
+        )
+        return cls(heading_3=heading_block_data)
 
 
 HeadingBlock = Annotated[
@@ -351,16 +487,53 @@ class HeadingBlockFactory:
         is_toggleable: bool = False,
         heading_type: Literal["heading_1", "heading_2", "heading_3"] = "heading_1",
     ):
-        pass
+        if heading_type == "heading_1":
+            return Heading1Block(
+                heading_1=HeadingBlockData(
+                    rich_text=rich_text,
+                    color=color,
+                    is_toggleable=is_toggleable,
+                )
+            )
+        elif heading_type == "heading_2":
+            return Heading2Block(
+                heading_2=HeadingBlockData(
+                    rich_text=rich_text,
+                    color=color,
+                    is_toggleable=is_toggleable,
+                )
+            )
+        elif heading_type == "heading_3":
+            return Heading3Block(
+                heading_3=HeadingBlockData(
+                    rich_text=rich_text,
+                    color=color,
+                    is_toggleable=is_toggleable,
+                )
+            )
+        else:
+            raise ValueError(
+                f"Invalid heading type: {heading_type}, must be heading_1, heading_2, or heading_3"
+            )
 
 
 # image: Refer to https://developers.notion.com/reference/block#image
-ImageBlockData = FileObject
+ImageBlockData = BlockFileObject
 
 
 class ImageBlock(BaseBlock):
     type: Literal["image"] = "image"
     image: ImageBlockData
+
+    @classmethod
+    def new(cls, url: str, caption: str | None = None):
+        image_block_data = ExternalBlockFileObject(
+            external=_FileExternal(url=url),
+            caption=(
+                [RichTextObjectFactory.new_text(content=caption)] if caption else []
+            ),
+        )
+        return cls(image=image_block_data)
 
 
 # link_preview: Refer to https://developers.notion.com/reference/block#link_preview
@@ -386,7 +559,7 @@ class NumberedListItemBlockData(BaseModel):
     rich_text: List[RichTextObject] = Field(
         default_factory=list, description="The content of the numbered list item."
     )
-    color: ColorLiteral
+    color: ColorLiteral | None = None
     children: List[BlockObject] = Field(
         default_factory=list,
         description="The nested child blocks (if any) of the numbered_list_item block.",
@@ -400,13 +573,21 @@ class NumberedListItem(BaseModel):
         description="Numbered list item block object",
     )
 
+    @classmethod
+    def new(cls, rich_text: str, color: ColorLiteral | None = None):
+        numbered_list_item_data = NumberedListItemBlockData(
+            rich_text=[RichTextObjectFactory.new_text(content=rich_text)],
+            color=color,
+        )
+        return cls(numbered_list_item=numbered_list_item_data)
+
 
 # paragraph: Refer to https://developers.notion.com/reference/block
 class ParagraphBlockData(BaseModel):
     rich_text: List[RichTextObject] = Field(
         default_factory=list, description="The content of the paragraph."
     )
-    color: ColorLiteral
+    color: ColorLiteral | None = None
     children: List[BlockObject] = Field(
         default_factory=list,
         description="The nested child blocks (if any) of the paragraph block.",
@@ -417,11 +598,29 @@ class ParagraphBlock(BaseBlock):
     type: Literal["paragraph"] = "paragraph"
     paragraph: ParagraphBlockData
 
+    @classmethod
+    def new(cls, rich_text: str, color: ColorLiteral | None = None):
+        paragraph_block_data = ParagraphBlockData(
+            rich_text=[RichTextObjectFactory.new_text(content=rich_text)],
+            color=color,
+        )
+        return cls(paragraph=paragraph_block_data)
+
 
 # pdf: Refer to https://developers.notion.com/reference/block#pdf
 class PdfBlock(BaseBlock):
     type: Literal["pdf"] = "pdf"
-    pdf: BlockFileObject
+    pdf: FileObject
+
+    @classmethod
+    def new(cls, url: str, caption: str | None = None):
+        pdf_block_data = ExternalBlockFileObject(
+            external=_FileExternal(url=url),
+            caption=(
+                [RichTextObjectFactory.new_text(content=caption)] if caption else []
+            ),
+        )
+        return cls(pdf=pdf_block_data)
 
 
 # quote: Refer to https://developers.notion.com/reference/block#quote
@@ -429,7 +628,7 @@ class QuoteBlockData(BaseModel):
     rich_text: List[RichTextObject] = Field(
         default_factory=list, description="The content of the quote."
     )
-    color: ColorLiteral
+    color: ColorLiteral | None = None
     children: List[BlockObject] = Field(
         default_factory=list,
         description="The nested child blocks (if any) of the quote block.",
@@ -439,6 +638,14 @@ class QuoteBlockData(BaseModel):
 class QuoteBlock(BaseBlock):
     type: Literal["quote"] = "quote"
     quote: QuoteBlockData
+
+    @classmethod
+    def new(cls, rich_text: str, color: ColorLiteral | None = None):
+        quote_block_data = QuoteBlockData(
+            rich_text=[RichTextObjectFactory.new_text(content=rich_text)],
+            color=color,
+        )
+        return cls(quote=quote_block_data)
 
 
 # synced_block: Refer to https://developers.notion.com/reference/block#synced-block
@@ -493,6 +700,20 @@ class TableBlock(BaseBlock):
     type: Literal["table"] = "table"
     table: TableBlockData
 
+    @classmethod
+    def new(
+        cls,
+        table_width: PositiveInt,
+        has_column_header: bool,
+        has_row_header: bool,
+    ):
+        table_block_data = TableBlockData(
+            table_width=table_width,
+            has_column_header=has_column_header,
+            has_row_header=has_row_header,
+        )
+        return cls(table=table_block_data)
+
 
 # table_row: Refer to https://developers.notion.com/reference/block#table_rows
 class TableRowBlockData(BaseModel):
@@ -505,6 +726,13 @@ class TableRowBlockData(BaseModel):
 class TableRowBlock(BaseBlock):
     type: Literal["table_row"] = "table_row"
     table_row: TableRowBlockData
+
+    @classmethod
+    def new(cls, cells: List[str]):
+        table_row_block_data = TableRowBlockData(
+            cells=[RichTextObjectFactory.new_text(content=cell) for cell in cells],
+        )
+        return cls(table_row=table_row_block_data)
 
 
 # table_of_contents: Refer to https://developers.notion.com/reference/block#table_of_contents
@@ -544,8 +772,8 @@ class TodoBlockData(BaseModel):
     rich_text: List[RichTextObject] = Field(
         default_factory=list, description="The rich text displayed in the To do block."
     )
-    checked: Optional[bool] = Field(None, description="Whether the To do is checked.")
-    color: ColorLiteral
+    checked: bool = Field(False, description="Whether the To do is checked.")
+    color: ColorLiteral | None = None
     children: List[BlockObject] = Field(
         default_factory=list,
         description="The nested child blocks (if any) of the to_do block.",
@@ -555,6 +783,20 @@ class TodoBlockData(BaseModel):
 class TodoBlock(BaseModel):
     type: Literal["to_do"] = "to-do"
     to_do: TodoBlockData
+
+    @classmethod
+    def new(
+        cls,
+        rich_text: str,
+        checked: bool | None = None,
+        color: ColorLiteral | None = None,
+    ):
+        todo_block_data = TodoBlockData(
+            rich_text=[RichTextObjectFactory.new_text(content=rich_text)],
+            checked=checked,
+            color=color,
+        )
+        return cls(to_do=todo_block_data)
 
 
 # toggle-blocks: Refer to https://developers.notion.com/reference/block
