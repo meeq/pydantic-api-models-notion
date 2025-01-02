@@ -8,7 +8,7 @@ Reference:
 from datetime import datetime
 from typing import Literal, Optional, Annotated, Union
 
-from pydantic import Field, HttpUrl
+from pydantic import Field
 from pydantic_api.base import BaseModel
 
 
@@ -19,13 +19,13 @@ FileObjectTypeLiteral = Literal["file", "external"]
 class _FileExternal(BaseModel):
     """The `external` field of a `ExternalFileObject`."""
 
-    url: HttpUrl
+    url: str
 
 
 class _FileUploaded(BaseModel):
     """The `file` field of a `UploadedFileObject`."""
 
-    url: HttpUrl
+    url: str
     expiry_time: Optional[datetime] = None
 
 
@@ -44,7 +44,7 @@ class ExternalFileObject(_BaseFileObject):
     external: _FileExternal
 
     @classmethod
-    def new(cls, url: HttpUrl, name: str | None = None):
+    def new(cls, url: str, name: str | None = None):
         """
         Args:
             url (str): The URL of the external file.
@@ -64,7 +64,7 @@ class UploadedFileObject(_BaseFileObject):
     @classmethod
     def new(
         cls,
-        url: HttpUrl,
+        url: str,
         expire_time: Optional[datetime] = None,
         name: str | None = None,
     ):
@@ -87,7 +87,7 @@ FileObject = Annotated[
 
 class FileObjectFactory:
     @classmethod
-    def new_external(cls, url: HttpUrl, name: str | None = None) -> ExternalFileObject:
+    def new_external(cls, url: str, name: str | None = None) -> ExternalFileObject:
         """
         Create a new External File Object
 
@@ -103,7 +103,7 @@ class FileObjectFactory:
     @classmethod
     def new_uploaded(
         cls,
-        url: HttpUrl,
+        url: str,
         expire_time: Optional[datetime] = None,
         name: str | None = None,
     ) -> UploadedFileObject:

@@ -6,7 +6,7 @@ from typing import Literal, Union, List, Optional, Annotated
 from datetime import datetime
 
 from uuid import UUID
-from pydantic import Field, EmailStr, HttpUrl
+from pydantic import Field, EmailStr
 
 from pydantic_api.base import BaseModel
 from ..user import UserObject, UserObjectFactory
@@ -395,7 +395,7 @@ class TitleProperty(BasePageProperty):
 # url
 class URLProperty(BasePageProperty):
     type: Literal["url"] = "url"
-    url: HttpUrl
+    url: str
 
     @classmethod
     def new(

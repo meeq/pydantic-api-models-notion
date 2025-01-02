@@ -5,10 +5,10 @@ Reference: https://developers.notion.com/reference/block
 from __future__ import annotations
 from uuid import UUID
 from datetime import datetime
-from typing import Union, Optional, Literal, List, Annotated
+from typing import Union, Literal, List, Annotated
 
 from pydantic_api.base import BaseModel
-from pydantic import Field, HttpUrl, PositiveInt
+from pydantic import Field, PositiveInt
 
 from ..user import PartialUser
 from .rich_text import RichTextObject, RichTextObjectFactory
@@ -308,7 +308,7 @@ class DividerBlock(BaseBlock):
 
 # embed: Refer to https://developers.notion.com/reference/block#embed
 class EmbedBlockData(BaseModel):
-    url: HttpUrl = Field(..., description="The URL of the embed.")
+    url: str = Field(..., description="The URL of the embed.")
 
 
 class EmbedBlock(BaseBlock):
@@ -535,7 +535,7 @@ class ImageBlock(BaseBlock):
 
 # link_preview: Refer to https://developers.notion.com/reference/block#link_preview
 class LinkPreviewBlockData(BaseModel):
-    url: HttpUrl = Field(..., description="The URL of the link preview.")
+    url: str = Field(..., description="The URL of the link preview.")
 
 
 class LinkPreviewBlock(BaseBlock):
