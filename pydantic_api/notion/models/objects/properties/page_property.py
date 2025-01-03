@@ -331,11 +331,29 @@ class RichTextProperty(BasePageProperty):
     rich_text: List[RichTextObject]
 
     @classmethod
-    def new_plain_text(
+    def new_text(
         cls,
         text: str,
+        link_url: str | None = None,
+        bold: bool | None = None,
+        italic: bool | None = None,
+        strikethrough: bool | None = None,
+        underline: bool | None = None,
+        code: bool | None = None,
+        color: ColorLiteral | None = None,
     ):
-        return cls(rich_text=[RichTextObjectFactory.new_text(content=text)])
+        return cls(
+            rich_text=RichTextObjectFactory.new_text(
+                content=text,
+                link_url=link_url,
+                bold=bold,
+                italic=italic,
+                strikethrough=strikethrough,
+                underline=underline,
+                code=code,
+                color=color,
+            )
+        )
 
 
 #  select: Refer to https://developers.notion.com/reference/page-property-values#select
@@ -382,6 +400,13 @@ class TitleProperty(BasePageProperty):
     def new(
         cls,
         text: str,
+        link_url: str | None = None,
+        bold: bool | None = None,
+        italic: bool | None = None,
+        strikethrough: bool | None = None,
+        underline: bool | None = None,
+        code: bool | None = None,
+        color: ColorLiteral | None = None,
     ):
         """
         Author Note: This method is a simple version now, does not support annotations and links, but it works for most cases.
@@ -389,7 +414,18 @@ class TitleProperty(BasePageProperty):
         Args:
             text (str): The text content of the title.
         """
-        return cls(title=[RichTextObjectFactory.new_text(content=text)])
+        return cls(
+            title=RichTextObjectFactory.new_text(
+                content=text,
+                link_url=link_url,
+                bold=bold,
+                italic=italic,
+                strikethrough=strikethrough,
+                underline=underline,
+                code=code,
+                color=color,
+            )
+        )
 
 
 # url

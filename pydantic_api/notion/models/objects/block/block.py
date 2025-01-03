@@ -97,12 +97,13 @@ class BookmarkBlock(BaseBlock):
     bookmark: BookMarkBlockData
 
     @classmethod
-    def new(cls, url: str, caption: str | None = None):
+    def new(cls, url: str, caption: str | list[RichTextObject] | None = None):
+        if isinstance(caption, str):
+            caption = RichTextObjectFactory.new_text(caption)
+
         bookmark_block_data = BookMarkBlockData(
-            caption=(
-                [RichTextObjectFactory.new_text(content=caption)] if caption else []
-            ),
             url=url,
+            caption=caption or [],
         )
         return cls(bookmark=bookmark_block_data)
 
@@ -141,12 +142,14 @@ class BulletedListItemBlock(BaseBlock):
     @classmethod
     def new(
         cls,
-        rich_text: str,
+        rich_text: str | list[RichTextObject] | None = None,
         color: ColorLiteral | None = None,
         children: list | None = None,
     ):
+        if isinstance(rich_text, str):
+            rich_text = RichTextObjectFactory.new_text(rich_text)
         bulleted_list_item_data = BulletedListItemBlockData(
-            rich_text=[RichTextObjectFactory.new_text(content=rich_text)],
+            rich_text=rich_text or [],
             color=color,
             children=children or [],
         )
@@ -169,14 +172,16 @@ class CalloutBlock(BaseBlock):
     @classmethod
     def new(
         cls,
-        rich_text: str,
+        rich_text: str | list[RichTextObject] | None = None,
         icon: IconObject | None = None,
         color: ColorLiteral | None = None,
     ):
+        if isinstance(rich_text, str):
+            rich_text = RichTextObjectFactory.new_text(rich_text)
         callout_block_data = CalloutBlockData(
-            rich_text=[RichTextObjectFactory.new_text(content=rich_text)],
             icon=icon,
             color=color,
+            rich_text=rich_text or [],
         )
         return cls(callout=callout_block_data)
 
@@ -238,16 +243,18 @@ class CodeBlock(BaseBlock):
     @classmethod
     def new(
         cls,
-        code: str,
-        caption: str | None = None,
+        code: str | list[RichTextObject],
+        caption: str | list[RichTextObject] | None = None,
         language: CodeLanguageLiteral = "plain text",
     ):
+        if isinstance(code, str):
+            code = RichTextObjectFactory.new_text(code)
+        if isinstance(caption, str):
+            caption = RichTextObjectFactory.new_text(caption)
         code_block_data = CodeBlockData(
+            rich_text=code or [],
+            caption=caption or [],
             language=language,
-            caption=(
-                [RichTextObjectFactory.new_text(content=caption)] if caption else []
-            ),
-            rich_text=[RichTextObjectFactory.new_text(content=code)],
         )
         return cls(code=code_block_data)
 
@@ -333,6 +340,7 @@ class EmbedBlock(BaseBlock):
 
     @classmethod
     def new(cls, url: str):
+        """Support embedding image, video, audio, and other types of content. See [Supported embed types](https://developers.notion.com/reference/block#supported-embed-types) for more information."""
         embed_block_data = EmbedBlockData(url=url)
         return cls(embed=embed_block_data)
 
@@ -389,13 +397,13 @@ class FileBlock(BaseBlock):
     def new(
         cls,
         url: str,
-        caption: str | None = None,
+        caption: str | list[RichTextObject] | None = None,
     ):
+        if isinstance(caption, str):
+            caption = RichTextObjectFactory.new_text(content=caption)
         file_block_data = ExternalBlockFileObject(
             external=_FileExternal(url=url),
-            caption=(
-                [RichTextObjectFactory.new_text(content=caption)] if caption else []
-            ),
+            caption=caption or [],
         )
         return cls(file=file_block_data)
 
@@ -419,12 +427,14 @@ class Heading1Block(BaseBlock):
     @classmethod
     def new(
         cls,
-        rich_text: str,
+        rich_text: str | list[RichTextObject] | None = None,
         color: ColorLiteral | None = None,
         is_toggleable: bool = False,
     ):
+        if isinstance(rich_text, str):
+            rich_text = RichTextObjectFactory.new_text(content=rich_text)
         heading_block_data = HeadingBlockData(
-            rich_text=[RichTextObjectFactory.new_text(content=rich_text)],
+            rich_text=rich_text or [],
             color=color,
             is_toggleable=is_toggleable,
         )
@@ -438,12 +448,14 @@ class Heading2Block(BaseBlock):
     @classmethod
     def new(
         cls,
-        rich_text: str,
+        rich_text: str | list[RichTextObject] | None = None,
         color: ColorLiteral | None = None,
         is_toggleable: bool = False,
     ):
+        if isinstance(rich_text, str):
+            rich_text = RichTextObjectFactory.new_text(content=rich_text)
         heading_block_data = HeadingBlockData(
-            rich_text=[RichTextObjectFactory.new_text(content=rich_text)],
+            rich_text=rich_text or [],
             color=color,
             is_toggleable=is_toggleable,
         )
@@ -457,12 +469,14 @@ class Heading3Block(BaseBlock):
     @classmethod
     def new(
         cls,
-        rich_text: str,
+        rich_text: str | list[RichTextObject] | None = None,
         color: ColorLiteral | None = None,
         is_toggleable: bool = False,
     ):
+        if isinstance(rich_text, str):
+            rich_text = RichTextObjectFactory.new_text(content=rich_text)
         heading_block_data = HeadingBlockData(
-            rich_text=[RichTextObjectFactory.new_text(content=rich_text)],
+            rich_text=rich_text or [],
             color=color,
             is_toggleable=is_toggleable,
         )
@@ -479,11 +493,13 @@ class HeadingBlockFactory:
     @classmethod
     def new(
         cls,
-        rich_text: List[RichTextObject],
+        rich_text: str | list[RichTextObject] | None = None,
         color: ColorLiteral | None = None,
         is_toggleable: bool = False,
         heading_type: Literal["heading_1", "heading_2", "heading_3"] = "heading_1",
     ):
+        if isinstance(rich_text, str):
+            rich_text = RichTextObjectFactory.new_text(content=rich_text)
         if heading_type == "heading_1":
             return Heading1Block(
                 heading_1=HeadingBlockData(
@@ -523,12 +539,12 @@ class ImageBlock(BaseBlock):
     image: ImageBlockData
 
     @classmethod
-    def new(cls, url: str, caption: str | None = None):
+    def new(cls, url: str, caption: str | list[RichTextObject] | None = None):
+        if isinstance(caption, str):
+            caption = RichTextObjectFactory.new_text(content=caption)
         image_block_data = ExternalBlockFileObject(
             external=_FileExternal(url=url),
-            caption=(
-                [RichTextObjectFactory.new_text(content=caption)] if caption else []
-            ),
+            caption=caption or [],
         )
         return cls(image=image_block_data)
 
@@ -571,9 +587,13 @@ class NumberedListItemBlock(BaseBlock):
     )
 
     @classmethod
-    def new(cls, rich_text: str, color: ColorLiteral | None = None):
+    def new(
+        cls, rich_text: str | list[RichTextObject], color: ColorLiteral | None = None
+    ):
+        if isinstance(rich_text, str):
+            rich_text = RichTextObjectFactory.new_text(content=rich_text)
         numbered_list_item_data = NumberedListItemBlockData(
-            rich_text=[RichTextObjectFactory.new_text(content=rich_text)],
+            rich_text=rich_text or [],
             color=color,
         )
         return cls(numbered_list_item=numbered_list_item_data)
@@ -596,9 +616,13 @@ class ParagraphBlock(BaseBlock):
     paragraph: ParagraphBlockData
 
     @classmethod
-    def new(cls, rich_text: str, color: ColorLiteral | None = None):
+    def new(
+        cls, rich_text: str | list[RichTextObject], color: ColorLiteral | None = None
+    ):
+        if isinstance(rich_text, str):
+            rich_text = RichTextObjectFactory.new_text(content=rich_text)
         paragraph_block_data = ParagraphBlockData(
-            rich_text=[RichTextObjectFactory.new_text(content=rich_text)],
+            rich_text=rich_text or [],
             color=color,
         )
         return cls(paragraph=paragraph_block_data)
@@ -610,12 +634,12 @@ class PdfBlock(BaseBlock):
     pdf: FileObject
 
     @classmethod
-    def new(cls, url: str, caption: str | None = None):
+    def new(cls, url: str, caption: str | list[RichTextObject] | None = None):
+        if isinstance(caption, str):
+            caption = RichTextObjectFactory.new_text(content=caption)
         pdf_block_data = ExternalBlockFileObject(
             external=_FileExternal(url=url),
-            caption=(
-                [RichTextObjectFactory.new_text(content=caption)] if caption else []
-            ),
+            caption=caption or [],
         )
         return cls(pdf=pdf_block_data)
 
@@ -637,9 +661,13 @@ class QuoteBlock(BaseBlock):
     quote: QuoteBlockData
 
     @classmethod
-    def new(cls, rich_text: str, color: ColorLiteral | None = None):
+    def new(
+        cls, rich_text: str | list[RichTextObject], color: ColorLiteral | None = None
+    ):
+        if isinstance(rich_text, str):
+            rich_text = RichTextObjectFactory.new_text(content=rich_text)
         quote_block_data = QuoteBlockData(
-            rich_text=[RichTextObjectFactory.new_text(content=rich_text)],
+            rich_text=rich_text or [],
             color=color,
         )
         return cls(quote=quote_block_data)
@@ -725,9 +753,22 @@ class TableRowBlock(BaseBlock):
     table_row: TableRowBlockData
 
     @classmethod
-    def new(cls, cells: List[str]):
+    def new(cls, cells: List[str | RichTextObject]):
+        validated_cells: list[RichTextObject] = []
+        for cell in cells:
+            if isinstance(cell, str):
+                cell_as_rich_text_list = RichTextObjectFactory.new_text(content=cell)
+                if len(cell_as_rich_text_list) != 1:
+                    raise ValueError(
+                        f"invalid cell, expected a single rich text object, got {cell_as_rich_text_list}"
+                    )
+                validated_cells.append(cell_as_rich_text_list[0])
+            else:
+                validated_cells.append(cell)
+
+            validated_cells.append(cell)
         table_row_block_data = TableRowBlockData(
-            cells=[RichTextObjectFactory.new_text(content=cell) for cell in cells],
+            cells=validated_cells,
         )
         return cls(table_row=table_row_block_data)
 
@@ -789,12 +830,14 @@ class TodoBlock(BaseModel):
     @classmethod
     def new(
         cls,
-        rich_text: str,
+        rich_text: str | list[RichTextObject],
         checked: bool | None = None,
         color: ColorLiteral | None = None,
     ):
+        if isinstance(rich_text, str):
+            rich_text = RichTextObjectFactory.new_text(content=rich_text)
         todo_block_data = TodoBlockData(
-            rich_text=[RichTextObjectFactory.new_text(content=rich_text)],
+            rich_text=rich_text or [],
             checked=checked,
             color=color,
         )
@@ -820,12 +863,14 @@ class ToggleBlock(BaseBlock):
     @classmethod
     def new(
         cls,
-        rich_text: str,
+        rich_text: str | list[RichTextObject],
         color: ColorLiteral | None = None,
         children: list | None = None,
     ):
+        if isinstance(rich_text, str):
+            rich_text = RichTextObjectFactory.new_text(content=rich_text)
         toggle_block_data = ToggleBlockData(
-            rich_text=[RichTextObjectFactory.new_text(content=rich_text)],
+            rich_text=rich_text or [],
             color=color,
             children=children or [],
         )
@@ -842,12 +887,12 @@ class VideoBlock(BaseBlock):
     video: BlockFileObject
 
     @classmethod
-    def new(cls, url: str, caption: str | None = None):
+    def new(cls, url: str, caption: str | list[RichTextObject] | None = None):
+        if isinstance(caption, str):
+            caption = RichTextObjectFactory.new_text(content=caption)
         video_block_data = ExternalBlockFileObject(
             external=_FileExternal(url=url),
-            caption=(
-                [RichTextObjectFactory.new_text(content=caption)] if caption else []
-            ),
+            caption=caption or [],
         )
         return cls(video=video_block_data)
 
