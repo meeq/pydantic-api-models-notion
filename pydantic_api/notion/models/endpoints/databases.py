@@ -54,6 +54,10 @@ class CreateDatabaseRequest(BaseModel):
         None,
         description="The cover of the database. Not listed in the documentation but shown in the official example.",
     )
+    is_inline: bool | None = Field(
+        None,
+        description="Whether the database is shown as a full-page database or an inline database. If true, the database is shown as an inline database. If false, the database is shown as a full-page database. If omitted, the database is shown as a full-page database.",
+    )
 
     @model_validator(mode="after")
     def validate_properties(self):
