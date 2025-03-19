@@ -5,7 +5,7 @@ Reference: https://developers.notion.com/reference/property-schema-object
 from typing import List, Optional, Literal, Union, Annotated
 
 from uuid import UUID
-from pydantic import Field, model_validator
+from pydantic import ConfigDict, Field, model_validator
 
 from pydantic_api.base import BaseModel
 from ..common import ColorLiteral
@@ -19,7 +19,8 @@ from .common import (
 
 
 class EmptyConfig(BaseModel):
-    pass
+    ...
+    model_config = ConfigDict(extra="forbid")
 
 
 class BaseDatabaseProperty(BaseModel):
