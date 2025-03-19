@@ -8,7 +8,7 @@ Reference:
 from datetime import datetime
 from typing import Literal, Optional, Annotated, Union
 
-from pydantic import Field
+from pydantic import AnyUrl, Field
 from pydantic_api.base import BaseModel
 
 
@@ -19,13 +19,13 @@ FileObjectTypeLiteral = Literal["file", "external"]
 class _FileExternal(BaseModel):
     """The `external` field of a `ExternalFileObject`."""
 
-    url: str
+    url: AnyUrl
 
 
 class _FileUploaded(BaseModel):
     """The `file` field of a `UploadedFileObject`."""
 
-    url: str
+    url: AnyUrl
     expiry_time: Optional[datetime] = None
 
 
@@ -52,7 +52,7 @@ class ExternalFileObject(_BaseFileObject):
         Returns:
             ExternalFileObject: An instance of ExternalFileObject.
         """
-        return cls(external=_FileExternal(url=url), name=name)
+        return cls(external=_FileExternal(url=AnyUrl(url)), name=name)
 
 
 class UploadedFileObject(_BaseFileObject):
@@ -76,7 +76,7 @@ class UploadedFileObject(_BaseFileObject):
         Returns:
             UploadedFileObject: An instance of UploadedFileObject
         """
-        return cls(file=_FileUploaded(url=url, expiry_time=expire_time), name=name)
+        return cls(file=_FileUploaded(url=AnyUrl(url), expiry_time=expire_time), name=name)
 
 
 FileObject = Annotated[

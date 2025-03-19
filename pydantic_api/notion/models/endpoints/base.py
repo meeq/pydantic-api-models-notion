@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import Generic, TypeVar, Literal, Optional, Annotated, Union, List, Any
 
 from uuid import UUID
-from pydantic import Field, model_validator
+from pydantic import AnyHttpUrl, Field, model_validator
 
 from pydantic_api.base import BaseModel
 
@@ -35,7 +35,7 @@ class NotionPaginatedData(BaseModel, Generic[TResult]):
     has_more: bool
     type: NotionPaginatedDataTypeLiteral
     request_id: UUID
-    next_url: Optional[str] = Field(
+    next_url: Optional[AnyHttpUrl] = Field(
         None,
         description="The URL the user can request to get the next page of results.",
         examples=[

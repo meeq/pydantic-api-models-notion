@@ -1,6 +1,6 @@
 from typing import Literal, Optional
 
-from pydantic import Field
+from pydantic import AnyUrl, Field
 from pydantic_api.base import BaseModel
 
 from .base import BaseRichTextObject, TextAnnotations
@@ -8,7 +8,7 @@ from pydantic_api.notion.models.objects.common import ColorLiteral
 
 
 class TextObjectLink(BaseModel):
-    url: str
+    url: AnyUrl
 
 
 class TextObject(BaseModel):
@@ -22,7 +22,7 @@ class TextObject(BaseModel):
         """Creates a new TextObject."""
         link = None
         if link_url:
-            link = TextObjectLink(url=link_url)
+            link = TextObjectLink(url=AnyUrl(link_url))
         return cls(content=content, link=link)
 
 

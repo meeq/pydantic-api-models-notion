@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Optional, Literal, Union, Dict, Any, Annotated
 
 from uuid import UUID
-from pydantic import Field
+from pydantic import AnyHttpUrl, Field
 
 from pydantic_api.base import BaseModel
 from .user import PartialUser
@@ -37,8 +37,8 @@ class Page(BaseModel):
     cover: Optional[CoverObject] = Field(None)
     properties: Dict[str, Any] = Field(default_factory=dict)
     parent: ParentOfPage
-    url: str
-    public_url: Optional[str] = Field(None)
+    url: str | AnyHttpUrl
+    public_url: Optional[AnyHttpUrl] = Field(None)
 
     @property
     def title_property(self):
