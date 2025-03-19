@@ -11,8 +11,6 @@ keywords = ["notion", "pydantic", "api", "data-models"]
 license = "MIT"
 classifiers = [
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -23,7 +21,7 @@ classifiers = [
 ]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.10"
 emoji = "^2.14.0"
 pydantic-api-models = "^0.0.2"
 uuid = "^1.30"
