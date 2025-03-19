@@ -377,4 +377,6 @@ __all__ = [
     "UniqueIdDatabaseProperty",
     # Union Type
     "DatabaseProperty",
+    # Base Type
+    "BaseDatabaseProperty",
 ]
