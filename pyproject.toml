@@ -26,6 +26,13 @@ emoji = "^2.14.0"
 pydantic-api-models = "^0.0.2"
 uuid = "^1.30"
 
+[tool.poetry.group.dev.dependencies]
+mypy = "^1.15.0"
+
 [build-system]
 requires = ["poetry-core>=1.5.0"]
 build-backend = "poetry.core.masonry.api"
+
+[[tool.mypy.overrides]]
+module = ["pydantic_api.base.*"]
+follow_untyped_imports = true
