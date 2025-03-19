@@ -102,7 +102,7 @@ class DateProperty(BasePageProperty):
     """A page property of type 'date'."""
 
     type: Literal["date"] = "date"
-    date: DateValue = Field(
+    date: Optional[DateValue] = Field(
         ...,
         description="The value of the date property, including start and optional end.",
     )
@@ -217,7 +217,7 @@ class MultiSelectProperty(BasePageProperty):
 # number: Refer to https://developers.notion.com/reference/page-property-values#number
 class NumberProperty(BasePageProperty):
     type: Literal["number"] = "number"
-    number: float
+    number: Optional[float] = None
 
 
 # people: Refer to https://developers.notion.com/reference/page-property-values#people
@@ -359,7 +359,7 @@ class RichTextProperty(BasePageProperty):
 #  select: Refer to https://developers.notion.com/reference/page-property-values#select
 class SelectProperty(BasePageProperty):
     type: Literal["select"] = "select"
-    select: SelectOption
+    select: Optional[SelectOption] = None
 
     @classmethod
     def new(
