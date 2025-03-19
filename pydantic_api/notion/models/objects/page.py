@@ -6,7 +6,7 @@ from pydantic import Field
 
 from pydantic_api.base import BaseModel
 from .user import PartialUser
-from .properties import TitleProperty
+from .properties import PageProperty, TitleProperty
 from .common import IconObject, CoverObject
 from .parent import DatabaseParentObject, PageParentObject, WorkspaceParentObject
 
@@ -35,7 +35,7 @@ class Page(BaseModel):
     in_trash: bool
     icon: Optional[IconObject] = Field(None)
     cover: Optional[CoverObject] = Field(None)
-    properties: Dict[str, Any] = Field(default_factory=dict)
+    properties: Dict[str, PageProperty] = Field(default_factory=dict)
     parent: ParentOfPage
     url: str
     public_url: Optional[str] = Field(None)
