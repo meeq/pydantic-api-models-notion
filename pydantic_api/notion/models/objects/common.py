@@ -1,3 +1,4 @@
+from pydantic import AnyUrl
 from typing import Union, Literal
 
 from .emoji import EmojiObject

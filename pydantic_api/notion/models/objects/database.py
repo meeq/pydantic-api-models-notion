@@ -6,7 +6,7 @@ from datetime import datetime
 from typing import List, Optional, Literal, Dict, Any
 
 from uuid import UUID
-from pydantic import Field
+from pydantic import AnyHttpUrl, Field
 
 from pydantic_api.base import BaseModel
 from .user import PartialUser
@@ -41,7 +41,7 @@ class Database(BaseModel):
     properties: dict[str, DatabaseProperty]
     parent: ParentOfDatabase
     archived: bool
-    url: str
+    url: AnyHttpUrl
 
     @property
     def plain_text_title(self) -> str:

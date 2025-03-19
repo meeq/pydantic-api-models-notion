@@ -4,7 +4,7 @@ Reference: https://developers.notion.com/reference/user
 
 from typing import Optional, Literal, Union, Annotated
 from uuid import UUID
-from pydantic import Field, EmailStr
+from pydantic import AnyHttpUrl, Field, EmailStr
 
 from pydantic_api.base import BaseModel
 
@@ -36,7 +36,7 @@ class _BaseUserObject(PartialUser):
     name: Optional[str] = Field(
         None, description="User's name, as displayed in Notion."
     )
-    avatar_url: Optional[str] = Field(None, description="Chosen avatar image.")
+    avatar_url: Optional[AnyHttpUrl] = Field(None, description="Chosen avatar image.")
 
 
 class _PersonData(BaseModel):

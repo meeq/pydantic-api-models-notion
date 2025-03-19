@@ -1,6 +1,6 @@
 from typing import Literal, Optional
 
-from pydantic import Field
+from pydantic import AnyHttpUrl, Field
 
 from pydantic_api.base import BaseModel
 
@@ -29,7 +29,7 @@ class BaseRichTextObject(BaseModel):
         None, description="Formatting style for the text"
     )
     plain_text: Optional[str] = Field(None)
-    href: Optional[str] = Field(None, description="Hyperlink for the text")
+    href: Optional[AnyHttpUrl] = Field(None, description="Hyperlink for the text")
 
 
 __all__ = [

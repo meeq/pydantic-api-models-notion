@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import Literal, Union, Annotated, Optional
 
 from uuid import UUID
-from pydantic import Field
+from pydantic import AnyUrl, Field
 
 from pydantic_api.base import BaseModel
 from .base import BaseRichTextObject
@@ -54,7 +54,7 @@ class DateMentionObject(_BaseMentionObject):
 
 # 3. LinkPreview mention
 class LinkPreviewMentionBody(BaseModel):
-    url: str
+    url: AnyUrl
 
 
 class LinkPreviewMentionObject(_BaseMentionObject):

@@ -1,6 +1,6 @@
 from typing import Annotated, Union
 
-from pydantic import Field
+from pydantic import AnyUrl, Field
 
 from .base import TextAnnotations
 from .text import TextRichTextObject

@@ -8,7 +8,7 @@ from datetime import datetime
 from typing import Union, Literal, List, Annotated
 
 from pydantic_api.base import BaseModel
-from pydantic import Field, PositiveInt
+from pydantic import AnyUrl, Field, PositiveInt
 
 from ..user import PartialUser
 from .rich_text import RichTextObject, RichTextObjectFactory
@@ -89,7 +89,7 @@ class BookMarkBlockData(BaseModel):
     caption: List[RichTextObject] = Field(
         default_factory=list, description="The caption for the bookmark."
     )
-    url: str = Field(..., description="The link for the bookmark")
+    url: AnyUrl = Field(..., description="The link for the bookmark")
 
 
 class BookmarkBlock(BaseBlock):
@@ -102,7 +102,7 @@ class BookmarkBlock(BaseBlock):
             caption = RichTextObjectFactory.new_text(caption)
 
         bookmark_block_data = BookMarkBlockData(
-            url=url,
+            url=AnyUrl(url),
             caption=caption or [],
         )
         return cls(bookmark=bookmark_block_data)
@@ -315,7 +315,7 @@ class DividerBlock(BaseBlock):
 
 # embed: Refer to https://developers.notion.com/reference/block#embed
 class EmbedBlockData(BaseModel):
-    url: str = Field(..., description="The URL of the embed.")
+    url: AnyUrl = Field(..., description="The URL of the embed.")
 
 
 class EmbedBlock(BaseBlock):
@@ -341,7 +341,7 @@ class EmbedBlock(BaseBlock):
     @classmethod
     def new(cls, url: str):
         """Support embedding image, video, audio, and other types of content. See [Supported embed types](https://developers.notion.com/reference/block#supported-embed-types) for more information."""
-        embed_block_data = EmbedBlockData(url=url)
+        embed_block_data = EmbedBlockData(url=AnyUrl(url))
         return cls(embed=embed_block_data)
 
 
@@ -402,7 +402,7 @@ class FileBlock(BaseBlock):
         if isinstance(caption, str):
             caption = RichTextObjectFactory.new_text(content=caption)
         file_block_data = ExternalBlockFileObject(
-            external=_FileExternal(url=url),
+            external=_FileExternal(url=AnyUrl(url)),
             caption=caption or [],
         )
         return cls(file=file_block_data)
@@ -543,7 +543,7 @@ class ImageBlock(BaseBlock):
         if isinstance(caption, str):
             caption = RichTextObjectFactory.new_text(content=caption)
         image_block_data = ExternalBlockFileObject(
-            external=_FileExternal(url=url),
+            external=_FileExternal(url=AnyUrl(url)),
             caption=caption or [],
         )
         return cls(image=image_block_data)
@@ -551,7 +551,7 @@ class ImageBlock(BaseBlock):
 
 # link_preview: Refer to https://developers.notion.com/reference/block#link_preview
 class LinkPreviewBlockData(BaseModel):
-    url: str = Field(..., description="The URL of the link preview.")
+    url: AnyUrl = Field(..., description="The URL of the link preview.")
 
 
 class LinkPreviewBlock(BaseBlock):
@@ -638,7 +638,7 @@ class PdfBlock(BaseBlock):
         if isinstance(caption, str):
             caption = RichTextObjectFactory.new_text(content=caption)
         pdf_block_data = ExternalBlockFileObject(
-            external=_FileExternal(url=url),
+            external=_FileExternal(url=AnyUrl(url)),
             caption=caption or [],
         )
         return cls(pdf=pdf_block_data)
@@ -891,7 +891,7 @@ class VideoBlock(BaseBlock):
         if isinstance(caption, str):
             caption = RichTextObjectFactory.new_text(content=caption)
         video_block_data = ExternalBlockFileObject(
-            external=_FileExternal(url=url),
+            external=_FileExternal(url=AnyUrl(url)),
             caption=caption or [],
         )
         return cls(video=video_block_data)
