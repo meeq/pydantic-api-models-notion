@@ -380,4 +380,7 @@ __all__ = [
     "DatabaseProperty",
     # Base Type
     "BaseDatabaseProperty",
+    # Some config objects
+    "SelectPropertyConfig",
+    "MultiSelectPropertyConfig",
 ]
