@@ -24,7 +24,6 @@ classifiers = [
 python = "^3.10"
 emoji = "^2.14.0"
 pydantic-api-models = "^0.0.2"
-uuid = "^1.30"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^1.15.0"
