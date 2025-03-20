@@ -3,7 +3,7 @@ Reference: https://developers.notion.com/reference/page-property-values
 """
 
 from typing import Literal, Union, List, Optional, Annotated
-from datetime import datetime
+from datetime import date, datetime
 
 from uuid import UUID
 from pydantic import AnyUrl, Field, EmailStr
@@ -82,7 +82,7 @@ class CreatedTimeProperty(BasePageProperty):
 class DateValue(BaseModel):
     """Represents the value of a date property."""
 
-    start: datetime = Field(..., description="The start of the date or date range.")
+    start: datetime | date = Field(..., description="The start of the date or date range.")
     end: Optional[datetime] = Field(
         None, description="The end of the date range. If None, the date is not a range."
     )
@@ -91,7 +91,7 @@ class DateValue(BaseModel):
     @classmethod
     def new(
         cls,
-        start: datetime,
+        start: datetime | date,
         end: datetime | None = None,
         time_zone: str | None = None,
     ):
