@@ -40,13 +40,26 @@ class IconObjectFactory:
         return EmojiObject(emoji=emoji)
 
 
-CoverObject = ExternalFileObject
+CoverObject = Union[ExternalFileObject, UploadedFileObject]
 
 
 class CoverObjectFactory:
     @classmethod
     def from_external_file(cls, url: str):
         return ExternalFileObject.from_url(url=url)
+
+    @classmethod
+    def from_uploaded_file(
+        cls,
+        url: str,
+        expire_time: Optional[datetime] = None,
+        name: str | None = None,
+    ):
+        return UploadedFileObject.new(
+            url=url,
+            expire_time=expire_time,
+            name=name,
+        )
 
 
 ColorLiteral = Literal[
