@@ -1,11 +1,12 @@
 from pydantic import AnyUrl
-from typing import Union, Literal
+from datetime import datetime
+from typing import Union, Literal, Optional
 
 from .emoji import EmojiObject
-from .file import ExternalFileObject
+from .file import ExternalFileObject, UploadedFileObject
 
 
-IconObject = Union[ExternalFileObject, EmojiObject]
+IconObject = Union[UploadedFileObject, ExternalFileObject, EmojiObject]
 
 
 class IconObjectFactory:
@@ -13,6 +14,19 @@ class IconObjectFactory:
     def from_external_file(cls, url: str, name: str | None = None):
         return ExternalFileObject.new(
             url=url,
+            name=name,
+        )
+
+    @classmethod
+    def from_uploaded_file(
+        cls,
+        url: str,
+        expire_time: Optional[datetime] = None,
+        name: str | None = None,
+    ):
+        return UploadedFileObject.new(
+            url=url,
+            expire_time=expire_time,
             name=name,
         )
 
@@ -26,13 +40,26 @@ class IconObjectFactory:
         return EmojiObject(emoji=emoji)
 
 
-CoverObject = ExternalFileObject
+CoverObject = Union[ExternalFileObject, UploadedFileObject]
 
 
 class CoverObjectFactory:
     @classmethod
     def from_external_file(cls, url: str):
         return ExternalFileObject.from_url(url=url)
+
+    @classmethod
+    def from_uploaded_file(
+        cls,
+        url: str,
+        expire_time: Optional[datetime] = None,
+        name: str | None = None,
+    ):
+        return UploadedFileObject.new(
+            url=url,
+            expire_time=expire_time,
+            name=name,
+        )
 
 
 ColorLiteral = Literal[
