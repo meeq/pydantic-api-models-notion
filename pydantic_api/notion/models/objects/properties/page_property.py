@@ -431,7 +431,7 @@ class TitleProperty(BasePageProperty):
 # url
 class URLProperty(BasePageProperty):
     type: Literal["url"] = "url"
-    url: AnyUrl
+    url: Optional[AnyUrl] = None
 
     @classmethod
     def new(
